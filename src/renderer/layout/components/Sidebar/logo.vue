@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: "拼多多-采集器",
+      title: "拼夕夕-采集器",
     };
   }
 };
