@@ -18,6 +18,11 @@ import VueI18n from 'vue-i18n'
 import loadLanguage from "./i18n"
 const languages = loadLanguage()
 
+
+
+
+
+
 if (!process.env.IS_WEB) {
   if (!require('../../config').IsUseSysTitle) {
     require('@/styles/custom-title.scss')

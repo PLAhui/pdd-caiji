@@ -1,12 +1,17 @@
 import { ipcMain, dialog, BrowserWindow } from 'electron'
 import Server from '../server/index'
-import { winURL } from '../config/StaticPath'
+import {loadingURL, winURL} from '../config/StaticPath'
 import downloadFile from './downloadFile'
 import Update from './checkupdate'
+import initWindow_web from "./windowManager_web";
 
 export default {
   Mainfunc(IsUseSysTitle) {
     const updater = new Update();
+    ipcMain.handle('test',(event, arg) => {
+      initWindow_web(arg.url)
+      return "启动模拟器窗口"
+    })
     ipcMain.handle('IsUseSysTitle', async () => {
       return IsUseSysTitle
     })
@@ -93,7 +98,7 @@ export default {
         childWin = new BrowserWindow({
           width: arg?.width || 842,
           height: arg?.height || 595,
-          //width 和 height 将设置为 web 页面的尺寸(译注: 不包含边框), 这意味着窗口的实际尺寸将包括窗口边框的大小，稍微会大一点。 
+          //width 和 height 将设置为 web 页面的尺寸(译注: 不包含边框), 这意味着窗口的实际尺寸将包括窗口边框的大小，稍微会大一点。
           useContentSize: true,
           //自动隐藏菜单栏，除非按了Alt键。
           autoHideMenuBar: true,

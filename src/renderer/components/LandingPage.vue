@@ -15,7 +15,8 @@
         </div>
       </div>
 
-      <div class="right-side" v-if="true">
+      <ToolsBar/>
+      <div class="right-side" v-if="false">
         <div class="doc">
           <div class="title alt">{{ $t("buttonTips") }}</div>
           <el-button type="primary" round @click="open()">{{
@@ -86,9 +87,10 @@
 import SystemInformation from "./LandingPage/SystemInformation";
 import { message } from "@/api/login";
 import { ipcRenderer, shell } from "electron";
+import ToolsBar from "./parts/ToolsBar";
 export default {
   name: "landing-page",
-  components: { SystemInformation },
+  components: {ToolsBar, SystemInformation },
   data: () => ({
     newdata: {
       name: "yyy",

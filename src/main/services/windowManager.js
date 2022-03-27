@@ -9,11 +9,13 @@ var loadWindow = null
 var mainWindow = null
 setIpc.Mainfunc(config.IsUseSysTitle)
 
+//创建一个渲染进程（打开一个页面）
 function createMainWindow() {
   /**
    * Initial window options
    */
   mainWindow = new BrowserWindow({
+    title:'采集器',
     height: 900,
     useContentSize: true,
     width: 1400,

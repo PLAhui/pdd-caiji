@@ -62,6 +62,7 @@
     }
   },
   "dependencies": {
+    "@electron/remote": "^2.0.8",
     "axios": "^0.26.1",
     "electron-updater": "^4.6.5",
     "express": "^4.17.3",

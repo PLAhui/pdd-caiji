@@ -1,18 +1,44 @@
 'use strict'
 
-import { app } from 'electron'
+import {net,app, BrowserView, BrowserWindow, dialog, ipcMain,netLog} from 'electron'
 import initWindow from './services/windowManager'
 import DisableButton from './config/DisableButton'
 import electronDevtoolsInstaller, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import initWindow_web from "./services/windowManager_web";
+
+
+// window.onload=()=>{
+//   var btnDom =  document.querySelector("#btn_submit")
+//   btnDom.onClick=()=>{
+//     console.log('aaaaaaaaa')
+//   }
+// }
+// app.on('test', () => {
+//   console.log('==========test')
+// })
+
 
 function onAppReady () {
+  if(!net.online){
+    dialog.showErrorBox(
+        '错误',
+        "未连接网络"
+    )
+  }
+
+
+
+
+
   initWindow()
+  // initWindow_web()
   DisableButton.Disablef12()
   if (process.env.NODE_ENV === 'development') {
     electronDevtoolsInstaller(VUEJS_DEVTOOLS)
       .then((name) => console.log(`installed: ${name}`))
       .catch(err => console.log('Unable to install `vue-devtools`: \n', err))
   }
+
 }
 //禁止程序多开，此处需要单例锁的同学打开注释即可
 // const gotTheLock = app.requestSingleInstanceLock()
@@ -22,13 +48,15 @@ function onAppReady () {
 app.isReady() ? onAppReady() : app.on('ready', onAppReady)
 // 解决9.x跨域异常问题
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
-
+app.on("test",(event,status)=>{
+  console.log("renderer-data::"+status);
+})
 app.on('window-all-closed', () => {
   // 所有平台均为所有窗口关闭就退出软件
   app.quit()
 })
 app.on('browser-window-created', () => {
-  console.log('window-created')
+  console.log('窗口创建')
 })
 
 if (process.defaultApp) {

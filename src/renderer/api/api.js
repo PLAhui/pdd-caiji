@@ -26,3 +26,10 @@ export function qryData(conf) {
     }
   })
 }
+
+export function test(url){
+  return request({
+    url: url,
+    method: 'get',
+  })
+}
