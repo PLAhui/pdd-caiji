@@ -1,6 +1,9 @@
 .DS_Store
 node_modules/
+build/
 /dist/
+log
+yarn.lock
 build/win-unpacked/
 build/win-ia32-unpacked/
 npm-debug.log*
