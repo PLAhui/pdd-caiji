@@ -27,13 +27,13 @@ export default [
   {
     path: '/form',
     component: Layout,
-    meta: { title: '表单', icon: 'form' },
+    meta: { title: '配置', icon: 'form' },
     children: [
       {
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: '表单', icon: 'form' }
+        meta: { title: '配置', icon: 'form' }
       }
     ]
   },
@@ -43,9 +43,9 @@ export default [
     children: [
       {
         path: 'index',
-        name: '表格',
+        name: '数据',
         component: () => import('@/views/table/index'),
-        meta: { title: '表格', icon: 'table' }
+        meta: { title: '数据', icon: 'table' }
       }
     ]
   },

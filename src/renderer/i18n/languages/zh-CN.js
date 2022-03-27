@@ -1,5 +1,5 @@
 export const lang = {
-    welcome: "欢迎进入本框架",
+    welcome: "欢迎使用 拼多多-采集器",
     buttonTips: "您可以点击的按钮测试功能",
     waitDataLoading: "等待数据读取",
     about: {

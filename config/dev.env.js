@@ -1,4 +1,5 @@
 module.exports = {
   NODE_ENV: '"development"',
-  BASE_API: 'http://127.0.0.1:25565'
+  BASE_API: 'http://127.0.0.1:25565',
+  PDD_API: "https://app.yangkeduo.com"
 }

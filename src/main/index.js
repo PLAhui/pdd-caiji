@@ -33,9 +33,9 @@ app.on('browser-window-created', () => {
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.removeAsDefaultProtocolClient('electron-vue-template')
+    app.removeAsDefaultProtocolClient('拼夕夕采集器')
     console.log('有于框架特殊性开发环境下无法使用')
   }
 } else {
-  app.setAsDefaultProtocolClient('electron-vue-template')
+  app.setAsDefaultProtocolClient('拼夕夕采集器')
 }

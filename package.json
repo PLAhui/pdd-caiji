@@ -1,8 +1,8 @@
 {
-  "name": "electron-vue-admin",
+  "name": "pxx_caiji",
   "version": "0.0.1",
-  "author": "sky <https://github.com/umbrella22>",
-  "description": "An electron-vue project",
+  "author": "huiziqin <1193447180@qq.com>",
+  "description": "拼夕夕-采集器",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -26,8 +26,8 @@
         "url": "http://127.0.0.1"
       }
     ],
-    "productName": "electron-vue-admin",
-    "appId": "org.Sky.electron-vue",
+    "productName": "拼夕夕-采集器",
+    "appId": "1193447180",
     "directories": {
       "output": "build"
     },
@@ -144,5 +144,6 @@
     "webpack-dev-server": "^4.7.4",
     "webpack-hot-middleware": "^2.25.1",
     "webpack-merge": "^5.8.0"
-  }
+  },
+  "__npminstall_done": false
 }

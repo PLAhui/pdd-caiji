@@ -177,9 +177,9 @@ if (process.env.NODE_ENV === 'production') {
       new TerserPlugin({
         terserOptions: {
           compress: {
-            drop_console: true,
-            drop_debugger: true,
-            pure_funcs: ["console.log", "console.warn"]
+            drop_console: false,
+            drop_debugger: false,
+            pure_funcs: []
           }
         }
 

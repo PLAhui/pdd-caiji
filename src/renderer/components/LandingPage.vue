@@ -6,7 +6,7 @@
         <span class="title">{{ $t("welcome") }}</span>
         <system-information></system-information>
         <div v-if="textarray.length === 0">
-          <span>{{ text }}</span>
+<!--          <span>{{ text }}</span>-->
         </div>
         <div v-for="(itme, index) in textarray" :key="index" v-else>
           <span>{{ itme._id }}</span>
@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <div class="right-side">
+      <div class="right-side" v-if="true">
         <div class="doc">
           <div class="title alt">{{ $t("buttonTips") }}</div>
           <el-button type="primary" round @click="open()">{{
@@ -94,7 +94,7 @@ export default {
       name: "yyy",
       age: "12",
     },
-    logo: require("@/assets/logo.png"),
+    logo: require("@/assets/logo.jpg"),
     textarray: [],
     percentage: 0,
     colors: [
@@ -290,7 +290,7 @@ body {
 #logo {
   height: auto;
   margin-bottom: 20px;
-  width: 420px;
+  /*width: 420px;*/
 }
 
 main {

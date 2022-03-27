@@ -14,10 +14,10 @@ function createMainWindow() {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 800,
+    height: 900,
     useContentSize: true,
-    width: 1700,
-    minWidth: 1366,
+    width: 1400,
+    minWidth: 600,
     show: false,
     frame: config.IsUseSysTitle,
     titleBarStyle: platform().includes('win32') ? 'default' : 'hidden',
@@ -26,14 +26,14 @@ function createMainWindow() {
       nodeIntegration: true,
       webSecurity: false,
       // 如果是开发模式可以使用devTools
-      devTools: process.env.NODE_ENV === 'development',
-      // devTools: true,
+      // devTools: process.env.NODE_ENV === 'development',
+      devTools: true,
       // 在macos中启用橡皮动画
       scrollBounce: process.platform === 'darwin'
     }
   })
   // 这里设置只有开发环境才注入显示开发者模式
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     menuconfig.push({
       label: '开发者设置',
       submenu: [{
@@ -42,9 +42,24 @@ function createMainWindow() {
         role: 'toggledevtools'
       }]
     })
-  }
+  // }
+  const appMenu =
+    {
+      label: '编辑',
+      submenu: [
+        { label: '剪切', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
+        { label: '复制', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+        { label: '粘贴', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+        { label: '全选', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' }
+      ]
+    }
+  menuconfig.push(appMenu)
+
+
   // 载入菜单
   const menu = Menu.buildFromTemplate(menuconfig)
+
+
   Menu.setApplicationMenu(menu)
   mainWindow.loadURL(winURL)
 

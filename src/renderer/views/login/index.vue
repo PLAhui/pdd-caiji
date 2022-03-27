@@ -9,7 +9,7 @@
         ref="loginForm"
         label-position="left"
       >
-        <h3 class="title">后台管理框架</h3>
+        <h3 class="title">拼多多-采集器</h3>
         <el-form-item prop="username">
           <span class="svg-container svg-container_login">
             <svg-icon icon-class="user" />
@@ -66,8 +66,8 @@ export default {
       }
     };
     const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error("密码不能小于5位"));
+      if (value.length < 1) {
+        callback(new Error("密码不能小于1位"));
       } else {
         callback();
       }

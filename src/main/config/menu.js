@@ -28,7 +28,7 @@ function info () {
   dialog.showMessageBox({
     title: '关于',
     type: 'info',
-    message: 'electron-Vue框架',
+    message: '拼多多采集器',
     detail: `版本信息：${version}\n引擎版本：${process.versions.v8}\n当前系统：${os.type()} ${os.arch()} ${os.release()}`,
     noLink: true,
     buttons: ['查看github', '确定']
