@@ -4,17 +4,17 @@ import {
   app,
   netLog,
   ipcRenderer,
+  session,
   dialog
 } from 'electron'
 import { platform } from "os"
 import config from '@config'
-var loadWindow = null
-var mainWindow = null
-const session = require('electron').session;
+var webWindow = null
+
 
 //创建一个渲染进程（打开一个页面）
 function createMainWindow(url) {
-  mainWindow = new BrowserWindow({
+  webWindow = new BrowserWindow({
     title:'模拟器',
     height: 844,
     useContentSize: true,
@@ -33,22 +33,22 @@ function createMainWindow(url) {
       sandbox: true,    //沙盒选项,这个很重要
     }
   })
-  mainWindow.loadURL(url)
+  webWindow.loadURL(url)
 
-  var webContents = mainWindow.webContents;
-  let cookieInstance = webContents.session.cookies;
 
-  webContents.on('did-start-loading', function(event, result) {
+  let cookieInstance = webWindow.webContents.session.cookies;
+
+  webWindow.webContents.on('did-start-loading', function(event, result) {
     console.log("开始加载")
   });
-  webContents.on('did-stop-loading', function(event, result) {
+  webWindow.webContents.on('did-stop-loading', function(event, result) {
     console.log("结束加载")
     cookieInstance.get({domain:'app.yangkeduo.com'}, (error, cookies) => {
       console.log("cookies", cookies)
     }).then(r => {
       let tarCookie = r.find(v => v.name == "PDDAccessToken")
       console.log("PDDAccessToken 找到啦！！！", tarCookie)
-      dialog.showErrorBox('PDDAccessToken 找到啦', tarCookie.value)
+      webContents.fromId(2).send("cookie",r)
     })
   });
 
@@ -138,19 +138,18 @@ function createMainWindow(url) {
 
 
 
-  mainWindow.webContents.once('dom-ready', () => {
-
-    webContents.openDevTools()//打开开发者工具
-    mainWindow.show()
+  webWindow.webContents.once('dom-ready', () => {
+    webWindow.webContents.openDevTools()//打开开发者工具
+    webWindow.show()
   })
-  mainWindow.on('maximize',()=>{
-      mainWindow.webContents.send("w-max",true)
+  webWindow.on('maximize',()=>{
+    webWindow.webContents.send("w-max",true)
   })
-  mainWindow.on('unmaximize',()=>{
-      mainWindow.webContents.send("w-max",false)
+  webWindow.on('unmaximize',()=>{
+    webWindow.webContents.send("w-max",false)
   })
-  mainWindow.on('closed', () => {
-    mainWindow = null
+  webWindow.on('closed', () => {
+    webWindow = null
     // mainWindow.quit();
   })
   app.whenReady().then(async () => {

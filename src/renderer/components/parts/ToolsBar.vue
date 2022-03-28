@@ -12,7 +12,9 @@ const { session ,ipcRenderer} = require('electron')
 export default {
   name: "ToolsBar",
   mounted() {
-
+    ipcRenderer.on("cookie",(e,res)=>{
+      console.log("cookie",res)
+    })
 
   },
   methods:{
