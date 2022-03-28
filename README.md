@@ -10,7 +10,7 @@
 #### 系统截图
 
 ![采集器部分截图](https://zy-yusouu.oss-accelerate.aliyuncs.com/wp-content/uploads/2022/03/1648399275-2e8394b18cae5da.png)
-
+![采集器部分截图](https://zy-yusouu.oss-accelerate.aliyuncs.com/wp-content/uploads/2022/03/1648433737-a64ad1378ca1d12.png)
 
 敬请期待！
 合作&定制请联系：
