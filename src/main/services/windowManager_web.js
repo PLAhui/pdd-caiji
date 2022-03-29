@@ -37,20 +37,39 @@ function createMainWindow(url) {
   })
   webWindow.loadURL(url)
 
+  //监听请求的信息
+  try {
+    webWindow.webContents.debugger.attach('1.1')
+  } catch (err) {
+    console.log('调试器连接失败: ', err)
+  }
+  webWindow.webContents.debugger.on('detach', (event, reason) => {
+    console.log('调试器由于以下原因而分离 : ', reason)
+  })
+  webWindow.webContents.debugger.on('message', (event, method, params) => {
+    if (method === 'Network.responseReceived') {
+      var mimeType = params.response.mimeType;
+      if(mimeType !='image/gif' && mimeType !='image/jpeg' && mimeType == 'application/json'){
+        webContents.fromId(2).send("log",method,params)
+      }
+    }
+  })
+  webWindow.webContents.debugger.sendCommand('Network.enable')
+ //监听网页中请求的信息
+
 
   let cookieInstance = webWindow.webContents.session.cookies;
 
-  webWindow.webContents.on('did-start-loading', function(event, result) {
-    console.log("开始加载")
-  });
+  webWindow.webContents.on('did-start-loading', function(event, result) {});
   webWindow.webContents.on('did-stop-loading', function(event, result) {
-    console.log("结束加载")
-    cookieInstance.get({domain:'app.yangkeduo.com'}, (error, cookies) => {
-    }).then(r => {
-      let tarCookie = r.find(v => v.name == "PDDAccessToken")
+    // 查询与指定 url 相关的所有 cookies.
+    cookieInstance.get({domain:'app.yangkeduo.com'}, (error, cookies) => {}).then(r => {
+      //向ID为2的渲染进程发送消息
       webContents.fromId(2).send("cookie",r)
     })
+
   });
+
 
   //
   //
@@ -139,7 +158,7 @@ function createMainWindow(url) {
 
 
   webWindow.webContents.once('dom-ready', () => {
-    // webWindow.webContents.openDevTools()//打开开发者工具
+    webWindow.webContents.openDevTools()//打开开发者工具
     webWindow.show()
   })
   webWindow.on('maximize',()=>{

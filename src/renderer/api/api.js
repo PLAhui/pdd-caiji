@@ -23,7 +23,7 @@ import request from '@/utils/request'
 export function qryData(conf) {
   const {AccessToken,filter,keyword,current} = conf;
   return request({
-    url: process.env.PDD_API+'/proxy/api/search?sort=default&filter='+filter+'&q='+keyword+'&page='+current+'&is_new_query=1&size=20',
+    url: process.env.PDD_API+'/proxy/api/search?sort=default&filter='+filter+'&q='+keyword+'&page='+current+'&is_new_query=1&size=20&source=index',
     method: 'get',
     headers:{
       AccessToken:AccessToken

@@ -23,6 +23,9 @@ export default {
       }
 
     })
+    ipcRenderer.on("log",(e, method, params)=>{
+      console.log("请求方法：",method, "参数",params)
+    })
 
   },
   methods:{

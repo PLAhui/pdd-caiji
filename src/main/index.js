@@ -55,9 +55,7 @@ app.on('window-all-closed', () => {
   // 所有平台均为所有窗口关闭就退出软件
   app.quit()
 })
-app.on('browser-window-created', () => {
-  console.log('窗口创建')
-})
+app.on('browser-window-created', () => {})
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
