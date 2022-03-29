@@ -1,4 +1,3 @@
-<!--拼多多采集数据页-->
 <template>
   <div class="app-container">
     <el-row :gutter="24" type="flex" class="row-bg" justify="end">
@@ -16,33 +15,10 @@
 
     <el-table :data="tableData" border height="600" highlight-current-row :empty-text="emptyText"  tooltip-effect="dark" v-loading="loading">
       <el-table-column type="index"   label="序号"  width="50"></el-table-column>
-      <el-table-column label="店铺ID" prop="mall_id" width="100"></el-table-column>
-      <el-table-column label="商品ID" prop="goods_id" width="120"></el-table-column>
-      <el-table-column label="商品标题" show-overflow-tooltip prop="goods_name" width="200"></el-table-column>
-      <el-table-column label="缩略图" width="125">
+      <el-table-column label="企业名称" prop="companyModel.company"></el-table-column>
+      <el-table-column label="详情链接"  width="200">
         <template slot-scope="scope">
-          <el-image @click="preview(scope.row.thumb_url)" style="width: 100px; height: 100px" :src="scope.row.thumb_url" :preview-src-list="srcList"></el-image>
-        </template>
-      </el-table-column>
-      <el-table-column label="拼单价格" width="100">
-        <template slot-scope="scope">
-          <span>{{priceTools(scope.row.price)}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="原价" width="100">
-        <template slot-scope="scope">
-          <span>{{priceTools(scope.row.market_price)}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="单独购买价" width="100">
-        <template slot-scope="scope">
-          <span>{{priceTools(scope.row.normal_price)}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="已拼数量" prop="sales" width="100"></el-table-column>
-      <el-table-column label="详情链接">
-        <template slot-scope="scope">
-          <a :href="baseUrl+'/'+scope.row.link_url" target="_blank" style="color: #0080ff">查看商品详情</a>
+          <a :href="'https://'+scope.row.companyModel.domainUri+'/page/contactinfo.htm'" target="_blank" style="color: #0080ff">查看详情</a>
         </template>
       </el-table-column>
     </el-table>
@@ -61,18 +37,16 @@
 </template>
 
 <script>
-import {qryData} from "@/api/api";
+import {qry1688List} from "@/api/api";
 import tools from "@/utils/tools";
 import BottomBar from "../../components/parts/BottomBar";
 export default {
   mixins:[tools],
   data: () => {
     return {
-      errorText:'令牌失效，请打开搜索页，滑动验证后继续',
-      emptyText:'点击开始采集按钮，开始...',
+      emptyText:'请点击开始采集，获取数据',
       loading:false,
       baseUrl:process.env.PDD_API,
-      PDDAccessToken:localStorage.getItem("PDDAccessToken"),
       conf:JSON.parse(localStorage.getItem("conf")),
       tableData: [],
       srcList:[],
@@ -84,17 +58,16 @@ export default {
 
   components: {BottomBar},
   mounted() {
-    this.conf.AccessToken = this.PDDAccessToken;
-    // const {PDDAccessToken,filter,keyword} = this.conf;
+    const {AccessToken,filter,keyword} = this.conf;
     // this.getData({AccessToken,filter,keyword,current:this.current})
   },
 
   methods: {
 
     currentClick(current){
-      // this.current = current;
-      // const {AccessToken,filter,keyword} = this.conf;
-      // this.getData({AccessToken,filter,keyword,current:this.current})
+      this.current = current;
+      const {AccessToken,filter,keyword} = this.conf;
+      this.getData({AccessToken,filter,keyword,current:this.current})
     },
     prevClick(){
       this.current -=1;
@@ -118,20 +91,23 @@ export default {
       this.emptyText = "正在加载中...";
       this.loading = true;
       try {
-        qryData(data).then((res)=>{
+        qry1688List(data).then((res)=>{
           this.loading = false;
-          if(res.data.error_code){
-            this.emptyText = this.errorText;
-            this.$message.error(this.errorText);
+          var result = res.data.data;
+          console.log(result)
+          if(result==undefined){
+            this.emptyText = "令牌失效！";
+            this.$message.error("令牌失效")
             return;
           }
-          const {items} = res.data
-          this.total = res.data.total;
+          const items = result.data.companyWithOfferLists
+          this.total = result.data.totalCount;
           this.tableData = items
         })
       }catch (e) {
         this.loading = false;
-        this.emptyText = this.errorText;
+        this.emptyText = "令牌失效！";
+        this.$message.error("令牌失效")
       }
     },
 

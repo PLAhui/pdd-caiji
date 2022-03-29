@@ -19,6 +19,8 @@ function createMainWindow(url) {
     height: 844,
     useContentSize: true,
     width: 390,
+    x:1200,
+    y:100,
     show: false,
     frame: config.IsUseSysTitle,
     titleBarStyle: platform().includes('win32') ? 'default' : 'hidden',
@@ -44,10 +46,8 @@ function createMainWindow(url) {
   webWindow.webContents.on('did-stop-loading', function(event, result) {
     console.log("结束加载")
     cookieInstance.get({domain:'app.yangkeduo.com'}, (error, cookies) => {
-      console.log("cookies", cookies)
     }).then(r => {
       let tarCookie = r.find(v => v.name == "PDDAccessToken")
-      console.log("PDDAccessToken 找到啦！！！", tarCookie)
       webContents.fromId(2).send("cookie",r)
     })
   });
@@ -139,7 +139,7 @@ function createMainWindow(url) {
 
 
   webWindow.webContents.once('dom-ready', () => {
-    webWindow.webContents.openDevTools()//打开开发者工具
+    // webWindow.webContents.openDevTools()//打开开发者工具
     webWindow.show()
   })
   webWindow.on('maximize',()=>{
@@ -153,10 +153,10 @@ function createMainWindow(url) {
     // mainWindow.quit();
   })
   app.whenReady().then(async () => {
-    await netLog.startLogging('log')
+    // await netLog.startLogging('log')
     // After some network events
-    const path = await netLog.stopLogging()
-    console.log('网络日志写入', path)
+    // const path = await netLog.stopLogging()
+    // console.log('网络日志写入', path)
   })
 
 }

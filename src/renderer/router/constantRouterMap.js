@@ -43,12 +43,25 @@ export default [
     children: [
       {
         path: 'index',
-        name: '数据',
+        name: '拼夕夕数据',
         component: () => import('@/views/table/index'),
-        meta: { title: '数据', icon: 'table' }
+        meta: { title: '拼夕夕数据', icon: 'table' }
       }
     ]
   },
+  // {
+  //   path: '/table',
+  //   status:false,
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index_1688',
+  //       name: '1688数据',
+  //       component: () => import('@/views/table/index_1688'),
+  //       meta: { title: '1688数据', icon: 'table' }
+  //     }
+  //   ]
+  // },
   {
     path: '/permission',
     component: Layout,

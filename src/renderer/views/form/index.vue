@@ -7,9 +7,9 @@
       <el-form-item label="筛选条件">
         <el-input v-model="form.filter"placeholder="price,0,30"  ></el-input>
       </el-form-item>
-      <el-form-item label="AccessToken">
-        <el-input v-model="form.AccessToken"placeholder="访问令牌"  ></el-input>
-      </el-form-item>
+<!--      <el-form-item label="AccessToken">-->
+<!--        <el-input v-model="form.AccessToken"placeholder="访问令牌"  ></el-input>-->
+<!--      </el-form-item>-->
 
 
       <el-form-item>
@@ -30,7 +30,7 @@ export default {
       form: {
         keyword: "",
         filter: "",
-        AccessToken:'',
+        // AccessToken:'',
       }
     };
   },

@@ -15,8 +15,12 @@ import request from '@/utils/request'
 //     params: { token }
 //   })
 // }
+/**
+ * 采集拼多多关键词搜索的数据
+ * @param conf
+ * @returns {*}
+ */
 export function qryData(conf) {
-  console.log(conf)
   const {AccessToken,filter,keyword,current} = conf;
   return request({
     url: process.env.PDD_API+'/proxy/api/search?sort=default&filter='+filter+'&q='+keyword+'&page='+current+'&is_new_query=1&size=20',
@@ -26,6 +30,23 @@ export function qryData(conf) {
     }
   })
 }
+
+/**
+ * 1688企业列表数据
+ * @param conf
+ * @returns {*}
+ */
+export function qry1688List(conf) {
+  const {AccessToken,filter,keyword,current} = conf;
+  return request({
+    url: process.env.Ali1688_API+'/service/companySearchBusinessService?keywords='+keyword+'&spm=a26352.24780423.searchbox.input&async=true&requestId='+AccessToken+'&sessionId=b832393730ed4aa8adc2f8de1f309918&pageName=supplier&beginPage='+current+'&asyncCount=20&pageSize=20&startIndex=0',
+    method: 'get',
+    headers:{
+      requestId:AccessToken
+    }
+  })
+}
+
 
 export function test(url){
   return request({

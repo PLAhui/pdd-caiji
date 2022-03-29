@@ -12,8 +12,16 @@ const { session ,ipcRenderer} = require('electron')
 export default {
   name: "ToolsBar",
   mounted() {
+    /**
+     * 监听浏览器中cookie变化
+     */
     ipcRenderer.on("cookie",(e,res)=>{
-      console.log("cookie",res)
+      let PDDAccessToken = res.find(v => v.name == "PDDAccessToken")
+      if(PDDAccessToken!=null){
+        this.$message.success("已获取到:PDDAccessToken")
+        localStorage.setItem("PDDAccessToken",PDDAccessToken.value)
+      }
+
     })
 
   },
