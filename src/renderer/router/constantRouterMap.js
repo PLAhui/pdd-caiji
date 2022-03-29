@@ -38,13 +38,13 @@ export default [
     ]
   },
   {
-    path: '/table',
+    path: '/PDD',
     component: Layout,
     children: [
       {
         path: 'index',
         name: '拼夕夕数据',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/PDD/index'),
         meta: { title: '拼夕夕数据', icon: 'table' }
       }
     ]
