@@ -36,7 +36,7 @@ function createMainWindow() {
   })
   // 这里设置只有开发环境才注入显示开发者模式
   // if (process.env.NODE_ENV === 'development') {
-    menuconfig.push({
+  menuconfig.push({
       label: '开发者设置',
       submenu: [{
         label: '切换到开发者模式',
@@ -45,25 +45,22 @@ function createMainWindow() {
       }]
     })
   // }
-  const appMenu =
-    {
-      label: '编辑',
-      submenu: [
-        { label: '剪切', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
-        { label: '复制', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-        { label: '粘贴', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
-        { label: '全选', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' }
-      ]
-    }
-  menuconfig.push(appMenu)
-
+  menuconfig.push({
+    label: '编辑',
+    submenu: [
+      { label: '剪切', accelerator: 'CmdOrCtrl+X', selector: 'cut:' },
+      { label: '复制', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+      { label: '粘贴', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+      { label: '全选', accelerator: 'CmdOrCtrl+A', selector: 'selectAll:' }
+    ]
+  })
 
   // 载入菜单
-  const menu = Menu.buildFromTemplate(menuconfig)
-
-
-  Menu.setApplicationMenu(menu)
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menuconfig))
   mainWindow.loadURL(winURL)
+
+
+
 
 
   mainWindow.webContents.once('dom-ready', () => {

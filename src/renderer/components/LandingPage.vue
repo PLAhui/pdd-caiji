@@ -16,7 +16,7 @@
       </div>
 
       <ToolsBar/>
-      <div class="right-side" v-if="false">
+      <div class="right-side" v-if="true">
         <div class="doc">
           <div class="title alt">{{ $t("buttonTips") }}</div>
           <el-button type="primary" round @click="open()">{{
@@ -237,6 +237,7 @@ export default {
           break;
         case "two":
           ipcRenderer.invoke("start-download").then(() => {
+            console.log("okkkkk")
             this.dialogVisible = true;
           });
 

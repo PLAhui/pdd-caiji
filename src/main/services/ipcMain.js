@@ -1,4 +1,4 @@
-import { ipcMain, dialog, BrowserWindow } from 'electron'
+import {ipcMain, dialog, BrowserWindow, webContents} from 'electron'
 import Server from '../server/index'
 import {loadingURL, winURL} from '../config/StaticPath'
 import downloadFile from './downloadFile'
@@ -8,9 +8,16 @@ import initWindow_web from "./windowManager_web";
 export default {
   Mainfunc(IsUseSysTitle) {
     const updater = new Update();
+
+    //启动或显示拼多多窗口
     ipcMain.handle('openPddWindows',(event, arg) => {
-      initWindow_web(arg.url)
-      return "启动拼多多窗口"
+      if(BrowserWindow.fromId(3)){
+        BrowserWindow.fromId(3).show()
+        return "显示拼多多窗口"
+      }else{
+        initWindow_web(arg.url)
+        return "启动拼多多窗口"
+      }
     })
     ipcMain.handle('IsUseSysTitle', async () => {
       return IsUseSysTitle
@@ -31,7 +38,8 @@ export default {
       BrowserWindow.fromWebContents(event.sender)?.close()
     })
     ipcMain.handle('start-download', (event, msg) => {
-      downloadFile.download(BrowserWindow.fromWebContents(event.sender), msg.downloadUrL)
+      console.log("msg",msg)
+      downloadFile.download(BrowserWindow.fromWebContents(event.sender), 'http://pdd.yusouu.com')
     })
     ipcMain.handle('check-update', (event, args) => {
       updater.checkUpdate(BrowserWindow.fromWebContents(event.sender))

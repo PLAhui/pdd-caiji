@@ -13,7 +13,7 @@ export default {
   name: "ToolsBar",
   mounted() {
     /**
-     * 监听浏览器中cookie变化
+     * 监听浏览器中cookie变化，存入缓存
      */
     ipcRenderer.on("cookie",(e,res)=>{
       let PDDAccessToken = res.find(v => v.name == "PDDAccessToken")
@@ -21,7 +21,6 @@ export default {
         this.$message.success("已获取到:PDDAccessToken")
         localStorage.setItem("PDDAccessToken",PDDAccessToken.value)
       }
-
     })
     ipcRenderer.on("log",(e, method, params)=>{
       console.log("请求方法：",method, "参数",params)
@@ -30,8 +29,8 @@ export default {
   },
   methods:{
      open(url) {
-       ipcRenderer.invoke("test",{url:url}).then(res => {
-          console.log(res)
+       ipcRenderer.invoke("openPddWindows",{url:url}).then(res => {
+         console.log(res)
        });
     },
   }

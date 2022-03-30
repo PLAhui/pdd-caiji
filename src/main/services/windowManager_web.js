@@ -5,7 +5,7 @@ import {
   netLog,
   ipcRenderer,
   session,
-  dialog
+  dialog, ipcMain
 } from 'electron'
 import { platform } from "os"
 import config from '@config'
@@ -58,6 +58,7 @@ function createMainWindow(url) {
   })
   webWindow.webContents.debugger.sendCommand('Network.enable')
  //监听网页中请求的信息
+
 
 
   let cookieInstance = webWindow.webContents.session.cookies;

@@ -18,8 +18,9 @@ import VueI18n from 'vue-i18n'
 import loadLanguage from "./i18n"
 const languages = loadLanguage()
 
+import JsonExcel from 'vue-json-excel'
 
-
+Vue.component('downloadExcel', JsonExcel)
 
 
 

@@ -23,7 +23,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "http://127.0.0.1"
+        "url": "http://pdd.yusouu.com/"
       }
     ],
     "productName": "拼夕夕-采集器",
@@ -67,7 +67,8 @@
     "electron-updater": "^4.6.5",
     "express": "^4.17.3",
     "fs-extra": "^10.0.1",
-    "vue-clipboard2": "^0.3.3"
+    "vue-clipboard2": "^0.3.3",
+    "vue-json-excel": "^0.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",

@@ -5,7 +5,7 @@ import os from 'os'
 // 版本以package.json为基准。
 const version = require('../../../package.json').version
 // 您的下载地址
-const baseUrl = 'http://127.0.0.1:25565/'
+const baseUrl = 'http://pdd.yusouu.com/'
 var Sysarch = null
 var defaultDownloadUrL = null
 // 识别操作系统位数D

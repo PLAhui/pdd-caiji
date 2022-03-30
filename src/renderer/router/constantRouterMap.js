@@ -40,7 +40,14 @@ export default [
   {
     path: '/PDD',
     component: Layout,
+    meta: { title: '拼夕夕', icon: 'table' },
     children: [
+      {
+        path: 'caiji',
+        name: '采集',
+        component: () => import('@/views/PDD/caiji'),
+        meta: { title: '拼夕夕采集', icon: 'tree' }
+      },
       {
         path: 'index',
         name: '拼夕夕数据',

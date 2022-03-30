@@ -17,16 +17,16 @@ import request from '@/utils/request'
 // }
 /**
  * 采集拼多多关键词搜索的数据
- * @param conf
+ * @param conf {filter,keyword,current}
  * @returns {*}
  */
 export function qryData(conf) {
-  const {AccessToken,filter,keyword,current} = conf;
+  const {filter,keyword,current} = conf;
   return request({
     url: process.env.PDD_API+'/proxy/api/search?sort=default&filter='+filter+'&q='+keyword+'&page='+current+'&is_new_query=1&size=20&source=index',
     method: 'get',
     headers:{
-      AccessToken:AccessToken
+      AccessToken:localStorage.getItem('PDDAccessToken')
     }
   })
 }
