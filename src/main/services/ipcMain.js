@@ -8,9 +8,9 @@ import initWindow_web from "./windowManager_web";
 export default {
   Mainfunc(IsUseSysTitle) {
     const updater = new Update();
-    ipcMain.handle('test',(event, arg) => {
+    ipcMain.handle('openPddWindows',(event, arg) => {
       initWindow_web(arg.url)
-      return "启动模拟器窗口"
+      return "启动拼多多窗口"
     })
     ipcMain.handle('IsUseSysTitle', async () => {
       return IsUseSysTitle

@@ -37,6 +37,8 @@ function createMainWindow(url) {
   })
   webWindow.loadURL(url)
 
+
+
   //监听请求的信息
   try {
     webWindow.webContents.debugger.attach('1.1')
