@@ -60,8 +60,8 @@
               <span style="padding:0 10px;">搜索条件:{{item.filter}}</span>
               <span>页码:{{item.current}}</span>
               <span style="float: right">
-                <tag v-if="item.status=='采集异常'" @click="retry(item.info)">重试</tag>
-                <el-tag size="mini" :type="tagStatus(item.status)">{{item.status}}</el-tag>
+                <el-tag size="mini" :type="tagStatus(item.status)" @click="retry(item)">{{item.status}}</el-tag>
+                <el-tag v-if="item.status=='采集异常'" @click="retry(item)" size="mini" type="" style=" cursor:pointer;">重试</el-tag>
               </span>
             </div>
           </li>
@@ -194,6 +194,7 @@ export default {
           loading.close();
           //令牌失效的时候
           if(res.status!=200){
+            loading.close();
             data.status = "采集异常"
             this.TaskConfig.logs.unshift({info:data, status:false,value: "令牌失效，请通过操作拼多多窗口获取新令牌", time: format(new Date(), "HH:mm:ss")})
             this.errOperation('令牌失效，请通过操作拼多多窗口获取新令牌');
@@ -210,12 +211,14 @@ export default {
           });
           return  true;
         }).catch((e)=>{
+          loading.close();
           data.status = "采集异常"
           this.TaskConfig.logs.unshift({info:data, status:false,value: "请求被官方限制了，需重新登录", time: format(new Date(), "HH:mm:ss")})
           this.errOperation('请求被官方限制了，需重新登录');
           return false;
         })
       }catch (e) {
+        loading.close();
         data.status = "采集异常"
         this.TaskConfig.logs.unshift({info:data, status:false,value: "请求被官方限制了，需重新登录", time: format(new Date(), "HH:mm:ss")})
         this.errOperation('请求被官方限制了，需重新登录');

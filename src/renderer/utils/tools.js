@@ -13,7 +13,6 @@ export default {
      * 打开拼多多窗口
      */
     errOperation(msg){
-      loading.close();
       this.$message.error(msg);
       localStorage.removeItem('PDDAccessToken')
       ipcRenderer.invoke("openPddWindows",{url:process.env.PDD_API})

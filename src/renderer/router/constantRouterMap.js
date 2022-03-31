@@ -70,14 +70,14 @@ export default [
   //   ]
   // },
   {
-    path: '/permission',
+    path: '/',
     component: Layout,
     meta: { roles: ['admin'] },
     children: [
       {
-        path: 'index',
+        path: 'devIng',
         name: '权限',
-        component: () => import('@/views/permission/index'),
+        component: () => import('@/views/devIng'),
         meta: { title: '权限', icon: 'table' }
       }
     ]

@@ -47,6 +47,21 @@ export function qry1688List(conf) {
   })
 }
 
+/**
+ * 获取版本说明信息
+ * @param conf
+ * @returns {*}
+ */
+export function getVersionInfo(conf) {
+  return request({
+    url: process.env.BASE_API+'/reademe.json',
+    method: 'get',
+  })
+}
+
+
+
+
 
 export function test(url){
   return request({

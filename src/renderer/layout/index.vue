@@ -57,7 +57,7 @@ export default {
   }
 }
 .UseSysTitle{
-  top:0px;
+  top:10px;
 }
 .NoUseSysTitle{
   top:38px

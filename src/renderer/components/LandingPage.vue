@@ -26,6 +26,15 @@
             $t("buttons.checkUpdate")
           }}</el-button>
         </div>
+        <el-timeline style="margin-top: 20px">
+          <el-timeline-item  size="large" v-for="(item, index) in VersionInfo.info"  :key="index" :timestamp="item.time" placement="top">
+            <el-card>
+              <h4>{{item.title}}</h4>
+              <p>{{ item.desc }}</p>
+              <p v-if="item.showUrl"><el-link type="primary" :href="item.url" target="_blank">{{item.url_title}}</el-link></p>
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
 <!--        <div class="doc">-->
 <!--          <el-button type="primary" round @click="CheckUpdate('two')">{{-->
 <!--            $t("buttons.checkUpdate2")-->
@@ -88,10 +97,12 @@ import SystemInformation from "./LandingPage/SystemInformation";
 import { message } from "@/api/login";
 import { ipcRenderer, shell } from "electron";
 import ToolsBar from "./parts/ToolsBar";
+import {getVersionInfo} from "../api/api";
 export default {
   name: "landing-page",
   components: {ToolsBar, SystemInformation },
   data: () => ({
+    VersionInfo: {info:[]},
     newdata: {
       name: "yyy",
       age: "12",
@@ -188,6 +199,9 @@ export default {
           break;
       }
     });
+    getVersionInfo().then(res=>{
+      this.VersionInfo = res.data
+    })
   },
   methods: {
     openNewWin() {
