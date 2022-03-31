@@ -1,7 +1,11 @@
 {
   "name": "pxx_caiji",
-  "version": "0.1.0",
-  "author": "huiziqin <1193447180@qq.com>",
+  "version": "1.0.0",
+  "author":{
+    "name": "huiziqin",
+    "url": "https://996base.com",
+    "email": "1193447180@qq.com"
+  },
   "description": "拼夕夕采集器",
   "license": "MIT",
   "main": "./dist/electron/main.js",
