@@ -1,7 +1,18 @@
 <!--拼多多采集配置-->
 <template>
   <div class="app-container">
-   <!--采集配置-->
+
+    <el-row style="margin: 0px 10px 10px 10px">
+     <el-col>
+       <el-steps :active="step" :space="500"  finish-status="success" align-center>
+         <el-step title="配置采集任务" description="填写关键词，搜索条件，采集页码，点击生成任务"></el-step>
+         <el-step title="采集数据" description="点击采集按钮，采集分页数据"></el-step>
+         <el-step title="导出数据" description="采集完成后在【拼多多数据】菜单可预览，导出数据"></el-step>
+       </el-steps>
+     </el-col>
+    </el-row>
+
+    <!--采集配置-->
     <el-form ref="conf" :inline="true" :model="conf" :rules="rules" label-width="80px" size="mini" style="">
       <el-form-item label="关键词" prop="keyword">
         <el-input v-model="conf.keyword" size="mini" style="width: 130px;"/>
@@ -20,16 +31,18 @@
       </el-form-item>
     </el-form>
 
+
     <!--采集日志-->
     <ul class="infinite-list" style="overflow:auto">
       <div v-if="Logs.length==0">暂无日志</div>
-      <li v-for="(item,index) in Logs" :key="index" :class="{Logli:true,info:item.type=='info'}">
+      <li v-for="(item,index) in Logs" :key="index" :class="{Logli:true,error:item.status==false,success:item.status==true}">
         <div>
           <span>{{item.value}}</span>
           <span style="float: right">{{item.time}}</span>
         </div>
       </li>
     </ul>
+
 
 
     <el-row style="margin-top: 20px">
@@ -46,7 +59,10 @@
               <span>关键词:{{item.keyword}}</span>
               <span style="padding:0 10px;">搜索条件:{{item.filter}}</span>
               <span>页码:{{item.current}}</span>
-              <span style="float: right"><el-tag size="mini" :type="tagStatus(item.status)">{{item.status}}</el-tag></span>
+              <span style="float: right">
+                <tag v-if="item.status=='采集异常'" @click="retry(item.info)">重试</tag>
+                <el-tag size="mini" :type="tagStatus(item.status)">{{item.status}}</el-tag>
+              </span>
             </div>
           </li>
         </ul>
@@ -68,6 +84,7 @@ export default {
   mixins: [tools],
   data: () => {
     return {
+      step: 0,//当前步骤
       rules: {
         keyword: [
           {required: true, message: '请输入关键词', trigger: 'blur'},
@@ -132,6 +149,7 @@ export default {
           that.TaskConfig = taskConf;
           localStorage.setItem('task', JSON.stringify(taskConf))
         }
+        this.step = 1;
         this.$message.success("生成采集任务")
       })
     },
@@ -147,8 +165,7 @@ export default {
             isOver = false;
             this.TaskConfig.logs.unshift({value: "当前采集的页码为:"+item.current, time: format(new Date(), "HH:mm:ss")})
             //发送http请求获取数据
-            const status = this.getData(item);
-            console.log("status",status)
+            this.getData(item);
             return true; //跳出循环
           }
         })
@@ -156,6 +173,9 @@ export default {
         if (isOver){
           this.TaskConfig.logs.unshift({value: "采集已完成，共 "+this.TaskConfig.data.length+' 页数据', time: format(new Date(), "HH:mm:ss")})
           this.$message.success("采集已完成")
+          this.step = 2;
+          this.TaskConfig.task_status = 200;//采集完成
+          localStorage.setItem('task',JSON.stringify(this.TaskConfig))
         }
       }catch (e) {
         this.$message.error("请先生成采集任务")
@@ -168,12 +188,14 @@ export default {
      */
     getData(data){
       const that = this;
+      const loading = this.$loading({lock: true, text: '正在采集数据...', spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)'});
       try {
         qryData(data).then((res)=>{
+          loading.close();
           //令牌失效的时候
           if(res.status!=200){
             data.status = "采集异常"
-            this.TaskConfig.logs.unshift({status:false,value: "令牌失效，请通过操作拼多多窗口获取新令牌", time: format(new Date(), "HH:mm:ss")})
+            this.TaskConfig.logs.unshift({info:data, status:false,value: "令牌失效，请通过操作拼多多窗口获取新令牌", time: format(new Date(), "HH:mm:ss")})
             this.errOperation('令牌失效，请通过操作拼多多窗口获取新令牌');
             return false;
           }
@@ -182,23 +204,32 @@ export default {
           const {items} = res.data
           this.TaskConfig.data.push({list: items, config: data})
           localStorage.setItem('task',JSON.stringify(this.TaskConfig))
+          this.$notify({
+            title: '采集成功',
+            message:"第 "+data.current+"页 已采集"
+          });
           return  true;
         }).catch((e)=>{
           data.status = "采集异常"
-          this.TaskConfig.logs.unshift({status:false,value: "请求被官方限制了，需重新登录", time: format(new Date(), "HH:mm:ss")})
+          this.TaskConfig.logs.unshift({info:data, status:false,value: "请求被官方限制了，需重新登录", time: format(new Date(), "HH:mm:ss")})
           this.errOperation('请求被官方限制了，需重新登录');
           return false;
         })
       }catch (e) {
         data.status = "采集异常"
-        this.TaskConfig.logs.unshift({status:false,value: "请求被官方限制了，需重新登录", time: format(new Date(), "HH:mm:ss")})
+        this.TaskConfig.logs.unshift({info:data, status:false,value: "请求被官方限制了，需重新登录", time: format(new Date(), "HH:mm:ss")})
         this.errOperation('请求被官方限制了，需重新登录');
         return false;
       }
     },
 
-
-
+    /**
+     * 采集失败时
+     * 重试采集
+     */
+    retry(info){
+      this.getData(info);
+    },
 
   }
 }
@@ -214,7 +245,7 @@ export default {
   padding: 20px;
   height: 200px;
   color: #000000;
-  background-color: rgb(247, 247, 247);
+  //background-color: rgb(247, 247, 247);
 }
 .infinite-list-task{
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -223,7 +254,7 @@ export default {
   height: 300px;
   color: #000000;
   font-size: 12px;
-  background-color: rgb(247, 247, 247);
+  //background-color: rgb(247, 247, 247);
 }
 .Logli{
   font-size: 12px;
@@ -233,9 +264,14 @@ export default {
   background-color: #c3c2c2;
 }
 .error{
+  color: #fff;
   background-color: #d81b1b;
 }
 .warning{
   background-color: rgba(255, 225, 108, 0.96);
+}
+.success{
+  background-color: #2dc26b;
+  color: #fff;
 }
 </style>
