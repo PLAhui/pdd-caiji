@@ -26,6 +26,10 @@
       <el-form-item label="结束页" prop="endPageNum">
         <el-input-number v-model="conf.endPageNum" size="mini" style="width: 130px;"/>
       </el-form-item>
+      <el-select v-model="conf.sort" placeholder="请选择排序条件" size="mini" clearable>
+        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        </el-option>
+      </el-select>
       <el-form-item style="">
         <el-button style="width: 130px;" @click="createTask">生成采集任务</el-button>
       </el-form-item>
@@ -68,7 +72,11 @@
         </ul>
       </el-col>
     </el-row>
+<!--    sort: price  低到高-->
 
+<!--    sort: _price  高到低-->
+
+<!--    sort: _sales-->
 
 
   </div>
@@ -85,7 +93,8 @@ export default {
   data: () => {
     return {
       step: 0,//当前步骤
-      rules: {
+      options: [{label: '【价格】从低到高', value: 'price'},{label: '【价格】从高到低', value: '_price'}],
+        rules: {
         keyword: [
           {required: true, message: '请输入关键词', trigger: 'blur'},
         ],
@@ -100,8 +109,9 @@ export default {
         ],
       },
       conf: {
+        sort:'default',
         keyword: "充电宝",//关键词
-        filter: "price,10,30",//搜索条件
+        filter: "price,0,10,custom",//搜索条件
         endPageNum: 2,//结束页
         startPageNum: 1,//开始页
       },
@@ -139,6 +149,7 @@ export default {
           for (let i = that.conf.startPageNum; i <= that.conf.endPageNum; i++) {
             const item = {
               status: '未执行',
+              sort:that.conf.sort==''?'default':that.conf.sort,
               filter: that.conf.filter,
               keyword: that.conf.keyword,
               current: i
@@ -191,9 +202,10 @@ export default {
       const loading = this.$loading({lock: true, text: '正在采集数据...', spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)'});
       try {
         qryData(data).then((res)=>{
+          console.log(res)
           loading.close();
           //令牌失效的时候
-          if(res.status!=200){
+          if(res.data.error_code==54001){
             loading.close();
             data.status = "采集异常"
             this.TaskConfig.logs.unshift({info:data, status:false,value: "令牌失效，请通过操作拼多多窗口获取新令牌", time: format(new Date(), "HH:mm:ss")})

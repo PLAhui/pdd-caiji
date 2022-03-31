@@ -21,9 +21,9 @@ import request from '@/utils/request'
  * @returns {*}
  */
 export function qryData(conf) {
-  const {filter,keyword,current} = conf;
+  const {filter,keyword,current,sort} = conf;
   return request({
-    url: process.env.PDD_API+'/proxy/api/search?sort=default&filter='+filter+'&q='+keyword+'&page='+current+'&is_new_query=1&size=20&source=index',
+    url: process.env.PDD_API+'/proxy/api/search?sort='+sort+'&filter='+filter+'&q='+keyword+'&page='+current+'&is_new_query=1&size=20&source=index',
     method: 'get',
     headers:{
       AccessToken:localStorage.getItem('PDDAccessToken')
