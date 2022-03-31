@@ -11,7 +11,7 @@
     </el-row>
 
     <!--表格-->
-    <el-table v-loading="loading" :data="tableData" border empty-text="加载中..." height="600"
+    <el-table v-loading="loading" :data="tableData" border :empty-text="emptyText" height="600"
               highlight-current-row tooltip-effect="dark">
       <el-table-column label="序号" type="index" width="50"></el-table-column>
       <el-table-column label="店铺ID" prop="mall_id" width="120"></el-table-column>
@@ -70,6 +70,7 @@ export default {
   mixins: [tools],
   data: () => {
     return {
+      emptyText:'暂无数据，先去采集吧!',
       jsonFields: {  //导出Excel表格的表头设置
         '店铺ID': 'mall_id',
         '商品ID': 'goods_id',
