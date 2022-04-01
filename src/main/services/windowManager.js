@@ -27,6 +27,7 @@ function createMainWindow() {
       contextIsolation: false,
       nodeIntegration: true,
       webSecurity: false,
+      enableRemoteModule:true,
       // 如果是开发模式可以使用devTools
       // devTools: process.env.NODE_ENV === 'development',
       devTools: true,
@@ -62,8 +63,9 @@ function createMainWindow() {
 
 
 
-
   mainWindow.webContents.once('dom-ready', () => {
+
+
     mainWindow.show()
     if (process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools(true)
     if (config.UseStartupChart) loadWindow.destroy()

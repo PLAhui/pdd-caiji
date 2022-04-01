@@ -2,6 +2,7 @@ import {
   BrowserWindow,
   webContents,
   app,
+  remote,
   netLog,
   ipcRenderer,
   session,
@@ -25,6 +26,7 @@ function createMainWindow(url) {
     frame: config.IsUseSysTitle,
     titleBarStyle: platform().includes('win32') ? 'default' : 'hidden',
     webPreferences: {
+      enableRemoteModule:true,
       contextIsolation: false,
       nodeIntegration: true,
       webSecurity: false,
@@ -37,32 +39,63 @@ function createMainWindow(url) {
   })
   webWindow.loadURL(url)
 
+  //
+  // session.defaultSession.webRequest.onBeforeRequest((e,cl)=>{
+  //   let url = e.url;
+  //   if(e.method=='POST'){
+  //     webContents.fromId(2).send("log","logs",e.method)
+  //   }
+  //   cl({})
+  // })
 
 
-  //监听请求的信息
+
+
+  //无法看到响应内容
+  // //监听请求的信息
+  // //将调试器附加到webContents
+  // try {
+  //   webWindow.webContents.debugger.attach('1.1')
+  // } catch (err) {
+  //   console.log('调试器连接失败: ', err)
+  // }
+  // webWindow.webContents.debugger.on('detach', (event, reason) => {
+  //   console.log('调试器由于以下原因而分离 : ', reason)
+  // })
+  // webWindow.webContents.debugger.addListener('message', (event, method, params) => {
+  //   if (method === 'Network.responseReceived') {
+  //     var mimeType = params.response.mimeType;
+  //     if(mimeType !='image/gif' && mimeType !='image/jpeg' && mimeType == 'application/json'){
+  //       webContents.fromId(2).send("log",method,params)
+  //     }
+  //   }
+  // })
+  // webWindow.webContents.debugger.sendCommand('Network.enable')
+
+  /**
+   * 监听网页中http请求，获取请求和响应数据
+   */
   try {
-    webWindow.webContents.debugger.attach('1.1')
-  } catch (err) {
-    console.log('调试器连接失败: ', err)
-  }
+    webWindow.webContents.debugger.attach('1.3');
+  } catch (err) {console.log('调试器连接失败: ', err)}
   webWindow.webContents.debugger.on('detach', (event, reason) => {
     console.log('调试器由于以下原因而分离 : ', reason)
-  })
+  });
   webWindow.webContents.debugger.on('message', (event, method, params) => {
     if (method === 'Network.responseReceived') {
+      //params中无响应数据只有响应头
       var mimeType = params.response.mimeType;
-      if(mimeType !='image/gif' && mimeType !='image/jpeg' && mimeType == 'application/json'){
-        webContents.fromId(2).send("log",method,params)
+      if (mimeType != 'image/gif' && mimeType != 'image/jpeg' && mimeType == 'application/json') {
+        webWindow.webContents.debugger.sendCommand('Network.getResponseBody', { requestId: params.requestId }).then(function(response) {
+          webContents.fromId(2).send("log",params.response.url,JSON.parse(response.body))
+        });
       }
     }
   })
-  webWindow.webContents.debugger.sendCommand('Network.enable')
- //监听网页中请求的信息
-
+  webWindow.webContents.debugger.sendCommand('Network.enable');
 
 
   let cookieInstance = webWindow.webContents.session.cookies;
-
   webWindow.webContents.on('did-start-loading', function(event, result) {});
   webWindow.webContents.on('did-stop-loading', function(event, result) {
     // 查询与指定 url 相关的所有 cookies.

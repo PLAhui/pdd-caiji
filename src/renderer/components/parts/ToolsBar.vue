@@ -1,6 +1,8 @@
 <template>
 <div>
-  <el-button id="btn_submit" @click="open('https://app.yangkeduo.com/')">打开拼夕夕</el-button>
+  <el-button @click="open('https://app.yangkeduo.com/')">打开拼夕夕</el-button>
+  <el-button  @click="open('http://192.168.2.31/ssrew-web/#/index')">测试自定义协议</el-button>
+  <a href="pdd://www.yusouu.com">测试自定义协议</a>
 </div>
 </template>
 
@@ -12,6 +14,7 @@ const { session ,ipcRenderer} = require('electron')
 export default {
   name: "ToolsBar",
   mounted() {
+    console.log("页面1",require('electron').remote.getGlobal('sharedObject').someProperty)
     /**
      * 监听浏览器中cookie变化，存入缓存
      */
@@ -23,7 +26,7 @@ export default {
       }
     })
     ipcRenderer.on("log",(e, method, params)=>{
-      console.log("请求方法：",method, "参数",params)
+      console.log("请求链接：",method, "参数",params)
     })
 
   },
