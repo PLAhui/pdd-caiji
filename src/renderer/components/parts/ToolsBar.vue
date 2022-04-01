@@ -25,8 +25,8 @@ export default {
         localStorage.setItem("PDDAccessToken",PDDAccessToken.value)
       }
     })
-    ipcRenderer.on("log",(e, method, params)=>{
-      console.log("请求链接：",method, "参数",params)
+    ipcRenderer.on("GetHttpData",(e, method, params)=>{
+      console.log("请求说明：：",JSON.stringify(method), "参数",params)
     })
 
   },
