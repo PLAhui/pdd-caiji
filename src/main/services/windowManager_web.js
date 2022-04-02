@@ -21,7 +21,7 @@ function createMainWindow(url) {
     height: 844,
     useContentSize: true,
     width: 390,
-    x:1200,
+    x:1600,
     y:100,
     show: false,
     frame: config.IsUseSysTitle,

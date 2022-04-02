@@ -21,8 +21,7 @@ const languages = loadLanguage()
 import JsonExcel from 'vue-json-excel'
 
 Vue.component('downloadExcel', JsonExcel)
-
-
+Vue.prototype.$Bus = new Vue()
 
 if (!process.env.IS_WEB) {
   if (!require('../../config').IsUseSysTitle) {

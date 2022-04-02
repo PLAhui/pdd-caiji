@@ -2,7 +2,11 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-col>
+      <el-col :span="12">
+        <el-button @click="start()" style="float: left">开始采集</el-button>
+        <el-button @click="clean()" style="float: left">清空采集数据</el-button>
+      </el-col>
+      <el-col  :span="12">
         <download-excel :data="list" :fields="jsonFields" class="export-btn" header="拼多多采集数据"
                         name="拼多多采集.xls" type="xls">
           <el-button icon="el-icon-tickets" style="float: right" type="primary">导出</el-button>
@@ -58,33 +62,35 @@
                    @next-click="nextClick">
     </el-pagination>
 
-    <BottomBar/>
+<!--    <BottomBar/>-->
   </div>
 </template>
 
 <script>
 import tools from "@/utils/tools";
-import BottomBar from "../../components/parts/BottomBar";
+import caijiUtils from "@/utils/caijiUtils";
+import BottomBar from "@/components/parts/BottomBar";
+import {ipcRenderer} from "electron";
 
 export default {
-  mixins: [tools],
+  mixins: [tools,caijiUtils],
   data: () => {
     return {
       emptyText:'暂无数据，先去采集吧!',
       jsonFields: {  //导出Excel表格的表头设置
         '店铺ID': 'mall_id',
-        '商品ID': 'goods_id',
+        '商品ID': {field: "goods_id", callback: (value) => {return  value+"&nbsp;";}},
         '商品标题': 'goods_name',
-        '拼单价格': {field: "price", callback: (value) => {return  (value/100).toFixed(2);},},
-        '原价': {field: "market_price", callback: (value) => {return  (value/100).toFixed(2);},},
-        '单独购买价': {field: "normal_price", callback: (value) => {return  (value/100).toFixed(2);},},
+        '拼单价格': {field: "price", callback: (value) => {return  (value/100).toFixed(2)}},
+        '原价': {field: "market_price", callback: (value) => {return  (value/100).toFixed(2)}},
+        '单独购买价': {field: "normal_price", callback: (value) => {return  (value/100).toFixed(2)}},
         '已拼数量': 'sales',
         '缩略图': 'thumb_url',
         "详情链接": {field: "link_url", callback: (value) => {return process.env.PDD_API + "/" + value;},},
-
       },
       baseUrl: process.env.PDD_API,
       loading: false,
+      CaiJiList:[],//采集的所有元数据
       tableData: [],//当前分页的数据
       list: [],//总数据
       srcList: [],
@@ -96,45 +102,44 @@ export default {
 
   computed: {},
   components: {BottomBar},
+  created() {
+    this.$Bus.$on('upDataList',()=>{
+      this.initData();
+    })
+  },
   mounted() {
-    var task = JSON.parse(localStorage.getItem('task'));
-    if (task) {
-      task.data.forEach(item => {
-        this.list.push(...item.list)
-      })
-      this.tableData = this.list.slice(0, this.pageSize)
-      this.total = this.list.length;
-    }
+    this.initData();
   },
 
   methods: {
+    initData(){
+      var CaiJiList = JSON.parse(localStorage.getItem('CaiJiList'));
+      if(CaiJiList==null) {CaiJiList=[];localStorage.setItem('CaiJiList',JSON.stringify([]));}
+      this.CaiJiList = CaiJiList;
+      CaiJiList[0].items.forEach(item=>{
+        this.tableData.push(item.item_data.goods_model)
+      })
 
-    //点击页面
+      CaiJiList.forEach(item=>{
+        item.items.forEach(goods=>{
+          this.list.push(goods.item_data.goods_model)
+        })
+      })
+      this.total = this.list.length;
+    },
+    start(){
+      console.log("开始采集")
+      ipcRenderer.invoke("openPddWindows",{url:process.env.PDD_API})
+    },
+
+    //翻页
     currentClick(current) {
+      this.tableData = [];
       this.current = current;
-      var task = JSON.parse(localStorage.getItem('task'));
-      this.tableData = this.list.slice(this.pageSize * (current - 1),
-          this.pageSize * (current - 1) + this.pageSize)
+      this.CaiJiList[current-1].items.forEach(item=>{
+        this.tableData.push(item.item_data.goods_model)
+      })
     },
-    //点击上一页
-    prevClick() {
-      this.current -= 1;
-      var task = JSON.parse(localStorage.getItem('task'));
-      this.tableData = this.list.slice(this.pageSize * (this.current - 1),
-          this.pageSize * (this.current - 1) + this.pageSize)
-    },
-    //点击下一页
-    nextClick() {
-      var task = JSON.parse(localStorage.getItem('task'));
-      this.tableData = this.list.slice(this.pageSize * (this.current),
-          this.pageSize * (this.current) + this.pageSize)
-      this.current += 1;
-    },
-
-    outData() {
-      this.$message({message: "导出成功", type: "success"});
-    },
-
   }
 }
 
