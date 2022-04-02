@@ -55,14 +55,15 @@ export default {
       },
 
     /**
-     * 想缓存中写入采集数据
+     * 向缓存中写入采集数据
      * @param list
      */
     insertData(list){
+      var {items,p_search} =list;
       var CaiJiList = JSON.parse(localStorage.getItem('CaiJiList'));
-      CaiJiList.push(list)
+      CaiJiList.push({items,page:p_search.page})
       localStorage.setItem("CaiJiList",JSON.stringify(CaiJiList))
-      this.$message.success("采集到"+res.data.items.length+"条数据")
+      this.$message.success("采集到"+list.items.length+"条数据")
       //更新数据
       this.$Bus.$emit('upDataList','')
     },
@@ -87,5 +88,21 @@ export default {
     nextClick() {
       this.current += 1;
     },
+
+    /**
+     * 格式化数据
+     * list
+     * 数据量
+     * @param CaiJiList
+     */
+    initList(CaiJiList){
+      CaiJiList.forEach(item=>{
+        item.items.forEach(goods=>{
+          this.list.push(goods.item_data.goods_model)
+        })
+      })
+      this.total = this.list.length;
+    }
+
   }
 }

@@ -112,20 +112,19 @@ export default {
   },
 
   methods: {
+    //初始化数据 更新数据
     initData(){
       var CaiJiList = JSON.parse(localStorage.getItem('CaiJiList'));
       if(CaiJiList==null) {CaiJiList=[];localStorage.setItem('CaiJiList',JSON.stringify([]));}
       this.CaiJiList = CaiJiList;
-      CaiJiList[0].items.forEach(item=>{
+      if(CaiJiList.length==0){
+        return;
+      }
+      CaiJiList[this.current-1].items.forEach(item=>{
         this.tableData.push(item.item_data.goods_model)
       })
 
-      CaiJiList.forEach(item=>{
-        item.items.forEach(goods=>{
-          this.list.push(goods.item_data.goods_model)
-        })
-      })
-      this.total = this.list.length;
+      this.initList(CaiJiList)
     },
     start(){
       console.log("开始采集")
