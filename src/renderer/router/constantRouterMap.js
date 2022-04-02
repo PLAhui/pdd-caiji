@@ -56,6 +56,19 @@ export default [
       }
     ]
   },
+  {
+    path: '/Alibaba',
+    component: Layout,
+    meta: { title: '拼夕夕', icon: 'table' },
+    children: [
+      {
+        path: 'index',
+        name: '拼夕夕数据',
+        component: () => import('@/views/Alibaba/index'),
+        meta: { title: '1688数据采集', icon: 'table' }
+      }
+    ]
+  },
   // {
   //   path: '/table',
   //   status:false,

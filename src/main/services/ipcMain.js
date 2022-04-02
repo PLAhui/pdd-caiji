@@ -4,6 +4,7 @@ import {loadingURL, winURL} from '../config/StaticPath'
 import downloadFile from './downloadFile'
 import Update from './checkupdate'
 import initWindow_web from "./windowManager_web";
+import alibaba_web from "./alibaba_web";
 
 export default {
   Mainfunc(IsUseSysTitle) {
@@ -19,6 +20,18 @@ export default {
         return "启动拼多多窗口"
       }
     })
+
+    //启动或显示1688窗口
+    ipcMain.handle('open1688Windows',(event, arg) => {
+      if(BrowserWindow.fromId(3)){
+        BrowserWindow.fromId(3).show()
+        return "显示1688窗口"
+      }else{
+        alibaba_web(arg.url)
+        return "启动1688窗口"
+      }
+    })
+
     ipcMain.handle('IsUseSysTitle', async () => {
       return IsUseSysTitle
     })

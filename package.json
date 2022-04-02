@@ -1,7 +1,7 @@
 {
   "name": "pxx_caiji",
   "version": "1.0.2",
-  "author":{
+  "author": {
     "name": "huiziqin",
     "url": "https://996base.com",
     "email": "1193447180@qq.com"
@@ -64,16 +64,16 @@
       "target": "deb",
       "icon": "build/icons"
     },
-    "nsis":{
-      "include":"config/installer.nsh",
-      "oneClick":false,
-      "allowElevation":true,
-      "allowToChangeInstallationDirectory":true,
-      "createDesktopShortcut":true,
-      "createStartMenuShortcut":true,
-      "installerIcon":"build/icons/icon.ico",
-      "uninstallerIcon":"build/icons/icon.ico",
-      "installerHeaderIcon":"build/icons/icon.ico"
+    "nsis": {
+      "include": "config/installer.nsh",
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "build/icons/icon.ico",
+      "uninstallerIcon": "build/icons/icon.ico",
+      "installerHeaderIcon": "build/icons/icon.ico"
     }
   },
   "dependencies": {
@@ -83,7 +83,8 @@
     "express": "^4.17.3",
     "fs-extra": "^10.0.1",
     "vue-clipboard2": "^0.3.3",
-    "vue-json-excel": "^0.3.0"
+    "vue-json-excel": "^0.3.0",
+    "vue-xlsx-table": "^1.2.8"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",

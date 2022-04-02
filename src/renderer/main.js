@@ -21,6 +21,12 @@ const languages = loadLanguage()
 import JsonExcel from 'vue-json-excel'
 
 Vue.component('downloadExcel', JsonExcel)
+
+
+import vueXlsxTable from 'vue-xlsx-table'
+Vue.use(vueXlsxTable, {rABS: false})
+
+
 Vue.prototype.$Bus = new Vue()
 
 if (!process.env.IS_WEB) {
