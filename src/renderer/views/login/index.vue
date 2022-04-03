@@ -44,7 +44,7 @@
           <button type="button" class="btn" @click="handleLogin">登录</button>
         </div>
         <div class="tips">
-          <span style="margin-right:20px;">请联系客服获取账号密码</span>
+          <span style="margin-right:20px;">[定制]请联系客服获取账号密码</span>
           <span>QQ:1193447190  微信：DP6683007 </span>
         </div>
       </el-form>
@@ -76,8 +76,8 @@ export default {
     };
     return {
       loginForm: {
-        username: "xsk",
-        password: "Abc123456.",
+        username: "",
+        password: "",
       },
       loginRules: {
         username: [

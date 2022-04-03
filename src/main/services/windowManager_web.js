@@ -31,7 +31,7 @@ function createMainWindow(url) {
       contextIsolation: false,
       nodeIntegration: true,
       webSecurity: false,
-      devTools: true,
+      devTools: false,
       plugins: true, //是否支持插件
       webviewTag: true, //是否启用 tag标签
       scrollBounce: process.platform === 'darwin',
