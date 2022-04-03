@@ -125,9 +125,9 @@ app.on('browser-window-created', () => {})
 
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
-    app.removeAsDefaultProtocolClient('拼夕夕采集器')
+    app.removeAsDefaultProtocolClient('极简电商采集器')
     console.log('有于框架特殊性开发环境下无法使用')
   }
 } else {
-  app.setAsDefaultProtocolClient('拼夕夕采集器')
+  app.setAsDefaultProtocolClient('极简电商采集器')
 }

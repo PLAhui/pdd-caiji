@@ -1,12 +1,12 @@
 {
   "name": "pxx_caiji",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "author": {
     "name": "huiziqin",
     "url": "https://996base.com",
     "email": "1193447180@qq.com"
   },
-  "description": "拼夕夕采集器",
+  "description": "极简电商采集器",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -30,7 +30,7 @@
         "url": "http://pdd.yusouu.com/"
       }
     ],
-    "productName": "拼夕夕采集器",
+    "productName": "极简电商采集器",
     "appId": "1193447180",
     "directories": {
       "output": "build"
