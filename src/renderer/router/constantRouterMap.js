@@ -27,7 +27,7 @@ export default [
   {
     path: '/form',
     component: Layout,
-    meta: { title: '配置', icon: 'form' },
+    meta: { title: '配置', icon: 'form' ,roles: ['admin']},
     children: [
       {
         path: 'index',
@@ -40,13 +40,13 @@ export default [
   {
     path: '/PDD',
     component: Layout,
-    meta: { title: '拼夕夕', icon: 'table' },
+    meta: { title: '拼夕夕', icon: 'table',roles: ['admin','PDD'] },
     children: [
       {
         path: 'caiji',
         name: '采集',
         component: () => import('@/views/PDD/caiji'),
-        meta: { title: '拼夕夕采集', icon: 'tree' }
+        meta: { title: '拼夕夕采集', icon: 'tree',roles: ['admin'] }
       },
       {
         path: 'index',
@@ -59,11 +59,11 @@ export default [
   {
     path: '/Alibaba',
     component: Layout,
-    meta: { title: '拼夕夕', icon: 'table' },
+    meta: { title: '1688', icon: 'table',roles: ['admin','1688']},
     children: [
       {
         path: 'index',
-        name: '拼夕夕数据',
+        name: '1688数据',
         component: () => import('@/views/Alibaba/index'),
         meta: { title: '1688数据采集', icon: 'table' }
       }

@@ -15,13 +15,13 @@
         <div class="select-right">
           <el-dropdown trigger="click">
             <div>
-              <el-image :src="userImage" class="avatar">
+              <el-image :src="userInfo.avatar" class="avatar">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline"></i>
                 </div>
               </el-image>
               <div class="el-dropdown-link">
-               尊敬的： {{name}}
+               尊敬的： {{userInfo.realname}}
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </div>
             </div>
@@ -83,7 +83,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["name", "role", "sidebar"])
+    ...mapGetters(["userInfo", "role", "sidebar"])
   },
   beforeDestroy() {
     console.log("销毁计时器------------");

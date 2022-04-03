@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" v-loading="loading">
     <div class="login-from-box">
       <el-form
         class="login-form"
@@ -9,7 +9,7 @@
         ref="loginForm"
         label-position="left"
       >
-        <h3 class="title">拼夕夕-采集器</h3>
+        <h3 class="title">极简电商采集器</h3>
         <el-form-item prop="username">
           <span class="svg-container svg-container_login">
             <svg-icon icon-class="user" />
@@ -44,8 +44,8 @@
           <button type="button" class="btn" @click="handleLogin">登录</button>
         </div>
         <div class="tips">
-          <span style="margin-right:20px;">用户名: admin或者editor</span>
-          <span>密码：随便什么都行</span>
+          <span style="margin-right:20px;">请联系客服获取账号密码</span>
+          <span>QQ:1193447190  微信：DP6683007 </span>
         </div>
       </el-form>
     </div>
@@ -54,28 +54,30 @@
 
 <script>
 import { isvalidUsername } from "@/utils/validate";
+import {login} from "../../api/login";
 
 export default {
   name: "login",
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
+      // if (!isvalidUsername(value)) {
+      if (value.length < 1) {
         callback(new Error("请输入正确的用户名"));
       } else {
         callback();
       }
     };
     const validatePass = (rule, value, callback) => {
-      if (value.length < 1) {
-        callback(new Error("密码不能小于1位"));
+      if (value.length < 6) {
+        callback(new Error("密码不能小于6位"));
       } else {
         callback();
       }
     };
     return {
       loginForm: {
-        username: "admin",
-        password: "1",
+        username: "xsk",
+        password: "Abc123456.",
       },
       loginRules: {
         username: [
@@ -98,18 +100,26 @@ export default {
       }
     },
     handleLogin() {
+      var that = this;
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
+          console.log("登录");
           this.loading = true;
-          this.$store
-            .dispatch("Login", this.loginForm)
-            .then(() => {
-              this.loading = false;
-              this.$router.push({ path: "/" });
-            })
-            .catch(() => {
-              this.loading = false;
-            });
+          login(that.loginForm).then(res=>{
+            that.loading = false;
+            if(res.data.code==200){
+              that.$message.success(res.data.message)
+              that.$store.dispatch("Login",res.data.result).then(() => {
+                  this.$router.push({ path: "/" });
+                }).catch(() => {});
+            }else{
+              that.$message.error(res.data.message)
+            }
+            console.log(res)
+          }).catch(e=>{
+            that.loading = false;
+            that.$message.error(e)
+          })
         } else {
           console.log("error submit!!");
           return false;
