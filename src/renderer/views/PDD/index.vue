@@ -5,6 +5,7 @@
       <el-col :span="12">
         <el-button @click="start()" style="float: left">开始采集</el-button>
         <el-button @click="clean()" style="float: left">清空采集数据</el-button>
+        <el-tag style="margin: 5px;" size="">共采集数据:{{list.length}}</el-tag>
       </el-col>
       <el-col  :span="12">
         <download-excel :data="list" :fields="jsonFields" class="export-btn" header="拼多多采集数据"
@@ -51,29 +52,26 @@
         </template>
       </el-table-column>
     </el-table>
-
     <!--分页-->
     <el-pagination :page-size="pageSize"
                    :total="total" background
                    class="pagination"
                    layout="prev, pager, next"
                    @prev-click="prevClick"
-                   @current-change="currentClick"
+                   @current-change.sync="currentClick"
                    @next-click="nextClick">
     </el-pagination>
 
-<!--    <BottomBar/>-->
   </div>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
 import tools from "@/utils/tools";
-import caijiUtils from "@/utils/caijiUtils";
-import BottomBar from "@/components/parts/BottomBar";
-import {ipcRenderer} from "electron";
+import PinDuoDuoMixins from "@/mixins/PinDuoDuoMixins";
 
 export default {
-  mixins: [tools,caijiUtils],
+  mixins: [tools,PinDuoDuoMixins],
   data: () => {
     return {
       emptyText:'暂无数据，先去采集吧!',
@@ -90,9 +88,7 @@ export default {
       },
       baseUrl: process.env.PDD_API,
       loading: false,
-      CaiJiList:[],//采集的所有元数据
       tableData: [],//当前分页的数据
-      list: [],//总数据
       srcList: [],
       pageSize: 20,//每页数据量
       total: 0,//总记录数
@@ -100,46 +96,63 @@ export default {
     }
   },
 
-  computed: {},
-  components: {BottomBar},
-  created() {
-    this.$Bus.$on('upDataList',()=>{
-      this.initData();
-    })
+  computed: {
+    //拼多多数据
+    ...mapGetters(["PinDuoDuoCaiJiData"]),
+    list(){
+      const data = [];
+      this.PinDuoDuoCaiJiData.forEach(item=>{
+        item.items.forEach(good=>{
+          data.push(good)
+        })
+      })
+      this.total = data.length;
+      return data;
+    }
   },
-  mounted() {
+  components: {},
+  created() {
     this.initData();
   },
-
-  methods: {
-    //初始化数据 更新数据
-    initData(){
-      var CaiJiList = JSON.parse(localStorage.getItem('CaiJiList'));
-      if(CaiJiList==null) {CaiJiList=[];localStorage.setItem('CaiJiList',JSON.stringify([]));}
-      this.CaiJiList = CaiJiList;
-      if(CaiJiList.length==0){
-        return;
+  mounted() {
+    var that = this;
+    this.$Bus.$on("httpData",(res=>{
+      /**
+       * 响应的数据是来自采集数据的接口时
+       * 将数据存入状态管理和缓存中
+       */
+      if(this.strRegExp(res.url,'https://app.yangkeduo.com/proxy/api/search?pdduid')){
+        console.log("-----采集到数据----",this.PinDuoDuoCaiJiData.length)
+        console.log(res.ResponseBody)
+        var isSave = true;
+        if(res.ResponseBody.error_code==40002){
+          this.$message.error("账号被限制，请更换账号或稍后再采集")
+          return;
+        }
+        if(this.PinDuoDuoCaiJiData.length!=0){
+          that.PinDuoDuoCaiJiData.forEach(item=>{
+            if(item.page == res.ResponseBody.p_search.page){
+              isSave = false;
+            }
+          })
+          if (isSave){
+            that.$store.dispatch('InsertPinDuoDuoCaiJiData',{
+              items:res.ResponseBody.items,//采集到的元数据
+              page:res.ResponseBody.p_search.page//当前页码
+            })
+            that.currentClick(that.PinDuoDuoCaiJiData.length-1)
+          }
+        }else {
+          that.$store.dispatch('InsertPinDuoDuoCaiJiData',{
+            items:res.ResponseBody.items,//采集到的元数据
+            page:res.ResponseBody.p_search.page//当前页码
+          })
+          that.currentClick(that.PinDuoDuoCaiJiData.length)
+        }
       }
-      CaiJiList[this.current-1].items.forEach(item=>{
-        this.tableData.push(item.item_data.goods_model)
-      })
-
-      this.initList(CaiJiList)
-    },
-    start(){
-      console.log("开始采集")
-      ipcRenderer.invoke("openPddWindows",{url:process.env.PDD_API})
-    },
-
-    //翻页
-    currentClick(current) {
-      this.tableData = [];
-      this.current = current;
-      this.CaiJiList[current-1].items.forEach(item=>{
-        this.tableData.push(item.item_data.goods_model)
-      })
-    },
-  }
+    }))
+  },
+  methods: {}
 }
 
 </script>

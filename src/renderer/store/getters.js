@@ -1,3 +1,5 @@
+
+
 /**
  * 在这里则是state.文件名.状态名
  */
@@ -8,7 +10,8 @@ const getters = {
   avatar: state => state.user.avatar,
   name: state => state.user.name,
   roles: state => state.user.roles,
-  permission_routes: state => state.permission.routers
+  permission_routes: state => state.permission.routers,
+  PinDuoDuoCaiJiData: state => state.gather.PinDuoDuo,
 }
 
 export default getters

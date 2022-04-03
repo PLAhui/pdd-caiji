@@ -68,9 +68,6 @@
         </ul>
       </el-col>
     </el-row>
-
-
-
 <!--    <BottomBar/>-->
   </div>
 </template>
@@ -81,9 +78,12 @@ import caijiUtils from "@/utils/caijiUtils";
 import BottomBar from "@/components/parts/BottomBar";
 import {ipcRenderer} from "electron";
 import AlibabacaijiUtils from "../../utils/AlibabacaijiUtils";
-
+import { mapGetters } from "vuex";
 export default {
   mixins: [tools,AlibabacaijiUtils],
+  computed: {
+
+  },
   data: () => {
     return {
       CaiJiUrlList:[],//待采集网址数据
@@ -108,7 +108,7 @@ export default {
     }
   },
 
-  computed: {},
+
   components: {BottomBar},
   created() {
     this.$Bus.$on('upDataList',()=>{

@@ -28,45 +28,34 @@ export default function  GetHttpData(webWindow,id) {
     console.log('调试器由于以下原因而分离 : ', reason)
   });
   webWindow.webContents.debugger.on('message', (event, method, params) => {
-    //params中无响应数据只有响应头
-
+    //请求将被发送时
     if (method === 'Network.requestWillBeSent') {
-      webContents.fromId(id).send("GetHttpData",
-          {type: 'req', url: params.request.url}, params)
+      // webContents.fromId(id).send("GetHttpData",{type: 'requestWillBeSent', url: params.request.url}, params)
+    }
+    //装载完成时
+    if(method === 'Network.loadingFinished'){
+      // console.log("装载完成：method:",method,"params",params)
+      webWindow.webContents.debugger.sendCommand('Network.getResponseBody', { requestId: params.requestId }).then(function(response) {
+        webContents.fromId(id).send("GetHttpData", {type: 'repBody', params: params}, response.body)
+      }).catch(err=>{
+        webContents.fromId(id).send("logs", {method:'GetHttpData',msg:"获取响应内容异常",error:err},params);
+      })
     }
 
+    //收到答复时
     if (method === 'Network.responseReceived') {
+      // console.log("收到答复时：url:",params.response.url,"params",params)
+      //params中无响应数据只有响应头
       const mimeType = params.response.mimeType;
-      const Type = ['image/gif','image/jpeg','text/css','image/webp','application/javascript','application/octet-stream','text/html','image/png','application/x-font-ttf'];
-
+      const Type = ['image/gif','image/jpeg','text/css','image/webp','application/javascript','application/octet-stream','text/html-1','image/png','application/x-font-ttf'];
       if(Type.indexOf(mimeType) == -1){
-        console.log(Type.indexOf(mimeType),mimeType)
-        webContents.fromId(id).send("GetHttpData", {type: 'rep', url: params.response.url}, params)
-        webWindow.webContents.debugger.sendCommand('Network.getResponseBody', {requestId: params.requestId}).then(response=>{
-          webContents.fromId(id).send("GetHttpData", {type: 'repBody', url: params.response.url},response.body)
-        }).catch(err=>{
-          console.error("出现异常:",params)
-          // console.error(params.requestId,params)
-          // console.log("params",params)
-          // console.log("url",params.response.url)
-          // console.log("AccessToken",params.response.requestHeaders.AccessToken)
-          if(params.response.requestHeaders.AccessToken!=null){
-            webContents.fromId(id).send("GetHttpData", {type: 'repBody', url: params.response.url}, JSON.stringify({data:'抛出异常',msg: {url:params.response.url,AccessToken:params.response.requestHeaders.AccessToken}}))
-          }else{
-            webContents.fromId(id).send("GetHttpData", {type: 'repBody', url: params.response.url}, JSON.stringify({data:'抛出异常',msg:err}))
-          }
-        });
-
-
+        webContents.fromId(id).send("GetHttpData", {type: 'responseReceived', url: params.response.url}, params)
       }
-
-
-
-      //&& mimeType == 'application/json' && mimeType=='application/json;charset=UTF-8'
     }
   })
-
-  webWindow.webContents.debugger.sendCommand('Network.enable');
+  webWindow.webContents.debugger.sendCommand('Network.enable').catch(e=>{
+    webContents.fromId(id).send("NetworkEnable", {type: 'error_msg'},e)
+  })
 }
 
 

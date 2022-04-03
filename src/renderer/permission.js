@@ -24,7 +24,9 @@ router.beforeEach(async (to, from, next) => {
         } catch (error) {
           await store.dispatch('LogOut')
           console.log(error)
-          next('/login')
+          // next('/login')
+          await router.push('login')
+
         }
       }
 

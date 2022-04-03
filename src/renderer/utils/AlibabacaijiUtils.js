@@ -12,27 +12,27 @@ export default {
     /**
      * 监听浏览器窗口请求和响应的数据
      */
-    ipcRenderer.on("GetHttpData", (e, method, params) => {
-      if (method.type == 'repBody') {
-        // console.log("链接：", method.url,'内容',params)
-        try{
-          params = params.replace("mtopjsonp1(","");
-          params =params.replace(")","");
-          params = JSON.parse(params)
-          if(params.api){
-            if(params.data.companyName){
-              console.log(params.data)
-              // debugger
-              params.data['detailUrl']=JSON.parse(localStorage.getItem('tempUrl'))
-              this.insertData(params.data)
-            }
-          }
-        }catch (e) {
-          console.error("未获取到数据",e)
-          // console.error("链接：", method.url,'内容',params)
-        }
-      }
-    })
+    // ipcRenderer.on("GetHttpData", (e, method, params) => {
+    //   if (method.type == 'repBody') {
+    //     // console.log("链接：", method.url,'内容',params)
+    //     try{
+    //       params = params.replace("mtopjsonp1(","");
+    //       params =params.replace(")","");
+    //       params = JSON.parse(params)
+    //       if(params.api){
+    //         if(params.data.companyName){
+    //           console.log(params.data)
+    //           // debugger
+    //           params.data['detailUrl']=JSON.parse(localStorage.getItem('tempUrl'))
+    //           this.insertData(params.data)
+    //         }
+    //       }
+    //     }catch (e) {
+    //       console.error("未获取到数据",e)
+    //       // console.error("链接：", method.url,'内容',params)
+    //     }
+    //   }
+    // })
   },
 
 

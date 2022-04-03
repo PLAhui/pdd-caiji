@@ -40,6 +40,9 @@ function createMainWindow(url) {
   })
   webWindow.loadURL(url)
 
+  /**
+   * 监听网页中http请求，获取请求和响应数据
+   */
   GetHttpData(webWindow,2)
 
   //
@@ -71,19 +74,17 @@ function createMainWindow(url) {
   // })
   // webWindow.webContents.debugger.sendCommand('Network.enable')
 
-  /**
-   * 监听网页中http请求，获取请求和响应数据
-   */
 
 
+  // TODO 未使用
   let cookieInstance = webWindow.webContents.session.cookies;
   webWindow.webContents.on('did-start-loading', function(event, result) {});
   webWindow.webContents.on('did-stop-loading', function(event, result) {
     // 查询与指定 url 相关的所有 cookies.
-    cookieInstance.get({domain:'app.yangkeduo.com'}, (error, cookies) => {}).then(r => {
-      //向ID为2的渲染进程发送消息
-      webContents.fromId(2).send("cookie",r)
-    })
+    // cookieInstance.get({domain:'app.yangkeduo.com'}, (error, cookies) => {}).then(r => {
+    //   //向ID为2的渲染进程发送消息
+    //   webContents.fromId(2).send("cookie",r)
+    // })
 
   });
 

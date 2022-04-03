@@ -3,6 +3,22 @@ import {format} from "date-fns";
 
 export default {
   methods: {
+    /**
+     * 字符串是否包含另一个字符串
+     * @param url  完整的字符串
+     * @param str 包含的字符串
+     * @returns {boolean} true 包含  false 不包含
+     */
+    strRegExp(url,str){
+      if(url.indexOf(str)!= -1){
+        return true;
+      }
+      return false;
+    },
+
+
+
+
     priceTools (price){
       return (price/100).toFixed(2);
     },
