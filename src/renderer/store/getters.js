@@ -12,6 +12,7 @@ const getters = {
   departs: state => state.user.departs,
   permission_routes: state => state.permission.routers,
   PinDuoDuoCaiJiData: state => state.gather.PinDuoDuo,
+  AlibabaCaiJiData: state => state.gather.Alibaba,
 }
 
 export default getters

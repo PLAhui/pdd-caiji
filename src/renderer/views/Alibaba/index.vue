@@ -41,12 +41,12 @@
 <!--                   @next-click="nextClick">-->
 <!--    </el-pagination>-->
 
-    <el-row style="margin-top: 20px" :gutter="20">
+    <el-row style="margin-top: 20px" :gutter="20" v-if="true">
       <el-col :span="12">
-        <h4  class="tab">待采集网址[{{CaiJiUrlList.length}}]</h4>
+        <h4  class="tab">待采集网址[{{AlibabaCaiJiData.urls.length}}]</h4>
         <ul class="infinite-list" style="overflow:auto">
-          <div v-if="CaiJiUrlList.length==0">暂无数据</div>
-          <li v-for="(item,index) in CaiJiUrlList" :key="index" style="list-style-type:none; cursor:pointer;" @click="start(item)">
+          <div v-if="AlibabaCaiJiData.urls.length==0">暂无数据</div>
+          <li v-for="(item,index) in AlibabaCaiJiData.urls" :key="index" style="list-style-type:none; cursor:pointer;" @click="start(item)">
             <el-row><el-col>
               <span style="float: left;width: 70%">{{index+1}}:{{item.url}}</span>
               <span style="float: right;width: 30%">{{item.title}}</span>
@@ -54,11 +54,11 @@
           </li>
         </ul>
       </el-col>
-      <el-col :span="12">
-        <h4 class="tab">已采集网址[{{AlibabaCaijiData.length}}]</h4>
+      <el-col :span="12" v-if="false">
+        <h4 class="tab">已采集网址[{{AlibabaCaiJiData.length}}]</h4>
         <ul class="infinite-list" style="overflow:auto">
-          <div v-if="AlibabaCaijiData.length==0">暂无数据</div>
-          <li v-for="(item,index) in AlibabaCaijiData" :key="index" style="list-style-type:none;">
+          <div v-if="AlibabaCaiJiData.length==0">暂无数据</div>
+          <li v-for="(item,index) in AlibabaCaiJiData" :key="index" style="list-style-type:none;">
             <div>
               <span>{{index+1}}</span>
               <span>{{item.detailUrl.url}}</span>
@@ -68,28 +68,18 @@
         </ul>
       </el-col>
     </el-row>
-<!--    <BottomBar/>-->
   </div>
 </template>
 
 <script>
 import tools from "@/utils/tools";
-import caijiUtils from "@/utils/caijiUtils";
-import BottomBar from "@/components/parts/BottomBar";
-import {ipcRenderer} from "electron";
-import AlibabacaijiUtils from "../../utils/AlibabacaijiUtils";
-import { mapGetters } from "vuex";
+import AlibabaMixins from "../../mixins/AlibabaMixins";
+import {mapGetters} from "vuex";
 export default {
-  mixins: [tools,AlibabacaijiUtils],
-  computed: {
-
-  },
+  mixins: [tools,AlibabaMixins],
   data: () => {
     return {
-      CaiJiUrlList:[],//待采集网址数据
-      AlibabaCaijiData:[],//采集的元数据
-      tableData: [],//当前列表数据
-
+      tableData:[],
       emptyText:'暂无数据，先去采集吧!',
       jsonFields: {  //导出Excel表格的表头设置
         '企业名称': 'companyName',
@@ -109,54 +99,22 @@ export default {
   },
 
 
-  components: {BottomBar},
+  computed: {
+    //1688数据
+    ...mapGetters(["AlibabaCaiJiData"]),
+  },
+
   created() {
-    this.$Bus.$on('upDataList',()=>{
-      this.initData();
-    })
+    this.initData()
   },
   mounted() {
-    this.initData();
+
   },
 
   methods: {
 
-
-    //初始化数据 更新数据
-    initData(){
-      localStorage.removeItem('tempUrl')
-      console.log("初始化数据 更新数据")
-      this.CaiJiUrlList =  JSON.parse( localStorage.getItem("1688List"))
-      if (this.CaiJiUrlList == null){
-        this.CaiJiUrlList = [] //待采集网址库
-      }
-      this.AlibabaCaijiData =  JSON.parse( localStorage.getItem("AlibabaCaijiData"))
-      if (this.AlibabaCaijiData == null){
-        this.AlibabaCaijiData = []//已经采集的数据
-        this.tableData = []//已经采集的数据
-      }
-      this.tableData = []
-      this.AlibabaCaijiData.forEach(item=>{
-        this.tableData.push(item)
-      })
-
-
-    },
     start(item){
       console.log("开始采集")
-      if(!item){
-        item = this.CaiJiUrlList[0]
-      }
-
-     try{
-       localStorage.setItem('tempUrl',JSON.stringify(item))
-       ipcRenderer.invoke("open1688Windows",{url:item.url})
-     }catch (e) {
-       this.$message.error("未导入网址")
-     }
-      // this.CaiJiUrlList.forEach(item=>{
-      //
-      // })
     },
 
     //翻页
@@ -172,8 +130,7 @@ export default {
      * 清空采集网址库
      */
     clean1688uRL(){
-      localStorage.removeItem('1688List')
-      this.CaiJiUrlList = [];
+
     }
   }
 }

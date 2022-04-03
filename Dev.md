@@ -70,3 +70,17 @@ this.$store.dispatch('SetGather',new Date().getTime())
 
 bus使用
   httpData :  监听发送打开网页的http请求数据
+
+
+
+目录结构：
+```coffeescript
+  src
+    main 
+      common
+        index.js   监听网页http请求，并通过进程通信发送给渲染线程
+      services  窗体和主进程的一些配置
+    renderer
+      api http请求接口配置
+      mixins 采集器组件的方法
+```
