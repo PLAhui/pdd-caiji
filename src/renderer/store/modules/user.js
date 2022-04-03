@@ -1,3 +1,5 @@
+import {logout} from "../../api/login";
+
 const user = {
   state: {
     token: JSON.parse(localStorage.getItem('token')),
@@ -47,13 +49,15 @@ const user = {
 
     // 登出
     LogOut({ commit }) {
-      return new Promise((resolve, reject) => {
-        commit("SET_TOKEN","");
-        commit("SET_INFO","");
-        commit("SET_ROLES", "");
-        commit("SET_DEPARTS", "");
-        resolve();
-      });
+      commit("SET_TOKEN","");
+      commit("SET_INFO","");
+      commit("SET_ROLES", "");
+      commit("SET_DEPARTS", "");
+
+      // return new Promise((resolve, reject) => {
+      //
+      //   resolve();
+      // });
     },
 
     // 前端 登出
