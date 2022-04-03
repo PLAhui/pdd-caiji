@@ -36,13 +36,11 @@ function createMainWindow() {
     }
   })
   // 这里设置只有开发环境才注入显示开发者模式
-<<<<<<< HEAD
+
   // if (process.env.NODE_ENV === 'development') {
-  menuconfig.push({
-=======
+
   if (process.env.NODE_ENV === 'development' || config.build.openDevTools) {
     menuconfig.push({
->>>>>>> fa0fd80ae004963a129b42c0d8f85f1984be4cae
       label: '开发者设置',
       submenu: [{
         label: '切换到开发者模式',
@@ -50,7 +48,7 @@ function createMainWindow() {
         role: 'toggledevtools'
       }]
     })
-  // }
+  }
   menuconfig.push({
     label: '编辑',
     submenu: [
