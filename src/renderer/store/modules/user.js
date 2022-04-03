@@ -70,6 +70,9 @@ const user = {
           if(item.orgCode=='A03A01'){//采集器用户组
             rolesList.push('PDD')
           }
+          if(item.orgCode=='A03A02'){//超级管理员用户组
+            rolesList.push('1688')
+          }
           if(item.orgCode=='A01'){//超级管理员用户组
             rolesList.push('admin')
           }
