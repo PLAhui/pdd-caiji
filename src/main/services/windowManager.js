@@ -29,15 +29,20 @@ function createMainWindow() {
       webSecurity: false,
       enableRemoteModule:true,
       // 如果是开发模式可以使用devTools
-      devTools: process.env.NODE_ENV === 'development',
+      devTools: process.env.NODE_ENV === 'development' || config.build.openDevTools,
       // devTools: true,
       // 在macos中启用橡皮动画
       scrollBounce: process.platform === 'darwin'
     }
   })
   // 这里设置只有开发环境才注入显示开发者模式
+<<<<<<< HEAD
   // if (process.env.NODE_ENV === 'development') {
   menuconfig.push({
+=======
+  if (process.env.NODE_ENV === 'development' || config.build.openDevTools) {
+    menuconfig.push({
+>>>>>>> fa0fd80ae004963a129b42c0d8f85f1984be4cae
       label: '开发者设置',
       submenu: [{
         label: '切换到开发者模式',
@@ -67,14 +72,14 @@ function createMainWindow() {
 
 
     mainWindow.show()
-    if (process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools(true)
+    if (process.env.NODE_ENV === 'development' || config.build.devTools) mainWindow.webContents.openDevTools(true)
     if (config.UseStartupChart) loadWindow.destroy()
   })
-  mainWindow.on('maximize',()=>{
-      mainWindow.webContents.send("w-max",true)
+  mainWindow.on('maximize', () => {
+    mainWindow.webContents.send("w-max", true)
   })
-  mainWindow.on('unmaximize',()=>{
-      mainWindow.webContents.send("w-max",false)
+  mainWindow.on('unmaximize', () => {
+    mainWindow.webContents.send("w-max", false)
   })
   mainWindow.on('closed', () => {
     mainWindow = null
