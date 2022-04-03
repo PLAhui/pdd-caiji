@@ -58,7 +58,7 @@
                    class="pagination"
                    layout="prev, pager, next"
                    @prev-click="prevClick"
-                   @current-change.sync="currentClick"
+                   @current-change="currentClick"
                    @next-click="nextClick">
     </el-pagination>
 
