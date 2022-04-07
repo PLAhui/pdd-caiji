@@ -60,6 +60,12 @@ export function getVersionInfo(conf) {
 }
 
 
+export function getDataByUrl(url){
+  return request({
+    url: url,
+    method: 'get',
+  })
+}
 
 
 

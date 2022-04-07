@@ -24,12 +24,22 @@ export default {
     //启动或显示1688窗口
     ipcMain.handle('open1688Windows',(event, arg) => {
       if(BrowserWindow.fromId(3)){
+        BrowserWindow.fromId(3).webContents.loadURL(arg.url)
         BrowserWindow.fromId(3).show()
         return "显示1688窗口"
       }else{
         alibaba_web(arg.url)
         return "启动1688窗口"
       }
+    })
+    //关闭1688窗口
+    ipcMain.handle('close1688Windows',(event, arg) => {
+      console.log("关闭弹窗",global.sharedObject.winId)
+     try {
+       BrowserWindow.fromWebContents(BrowserWindow.fromId(global.sharedObject.winId).webContents)?.destroy()
+     }catch (e) {
+       
+     }
     })
 
     ipcMain.handle('IsUseSysTitle', async () => {

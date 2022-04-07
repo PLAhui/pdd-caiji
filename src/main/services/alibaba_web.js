@@ -18,9 +18,9 @@ var webWindow = null
 function createMainWindow(url) {
   webWindow = new BrowserWindow({
     title:'模拟器',
-    height: 900,
+    height: 400,
     useContentSize: true,
-    width: 1200,
+    width: 400,
     x:1600,
     y:100,
     show: false,
@@ -31,7 +31,7 @@ function createMainWindow(url) {
       contextIsolation: false,
       nodeIntegration: true,
       webSecurity: false,
-      devTools: true,
+      devTools: false,
       plugins: true, //是否支持插件
       webviewTag: true, //是否启用 tag标签
       scrollBounce: process.platform === 'darwin',
@@ -61,6 +61,7 @@ function createMainWindow(url) {
 
 
   webWindow.webContents.once('dom-ready', () => {
+    global.sharedObject.winId = webWindow.id; //将窗口ID放入全局变量
     webWindow.webContents.openDevTools()//打开开发者工具
     webWindow.show()
   })
@@ -85,7 +86,7 @@ function createMainWindow(url) {
 
 
 
-function initWindow_web(url) {
+function alibaba_web(url) {
   return createMainWindow(url)
 }
-export default initWindow_web
+export default alibaba_web

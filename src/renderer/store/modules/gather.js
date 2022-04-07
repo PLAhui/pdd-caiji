@@ -78,8 +78,8 @@ const  gather = {
      */
     DELETE_CAIJI_Alibaba:(state, data) => {
       console.log("清空采集器数据")
-      localStorage.setItem("CaiJiData_1688", JSON.stringify({urls:[]}));
-      state.Alibaba = {urls:[]};
+      localStorage.setItem("CaiJiData_1688", JSON.stringify({urls:[],result:[],errorUrls:[]}));
+      state.Alibaba = {urls:[],result:[],errorUrls:[]};
     },
     /**
      * 1688
@@ -89,10 +89,32 @@ const  gather = {
      * @constructor
      */
     INSERT_DAIJI_Alibaba_Url:(state, data) => {
-      console.log(data)
-      var Alibaba = JSON.parse(localStorage.getItem("CaiJiData_1688"))
-      console.log(Alibaba.urls.length)
+      const Alibaba = JSON.parse(localStorage.getItem("CaiJiData_1688"));
       Alibaba.urls=data
+      localStorage.setItem("CaiJiData_1688", JSON.stringify(Alibaba));
+      state.Alibaba = Alibaba;
+    },
+
+    /**
+     * 添加采集数据【每采集一个则添加一个】
+     * urls中移除此条采集成功链接
+     * result:中存储采集成功的数据
+     * errList:记录采集异常的数据
+     * @param state
+     * @param data
+     * @constructor
+     */
+    ADD_DAIJI_Alibaba_INFO:(state, res) => {
+      const Alibaba = JSON.parse(localStorage.getItem("CaiJiData_1688"));
+      //删除采集到的元素
+      let deleteIndex = Alibaba.urls.findIndex(item => item.url === res.item.url);
+      Alibaba.urls.splice(deleteIndex,1);
+      if(res.status){
+        res.data['info'] = res.item
+        Alibaba.result.push(res.data)
+      }else {
+        Alibaba.errorUrls.push(res.item)
+      }
       localStorage.setItem("CaiJiData_1688", JSON.stringify(Alibaba));
       state.Alibaba = Alibaba;
     },
@@ -163,6 +185,20 @@ const  gather = {
     InsertAlibabaCaiJiUrl({ commit },data) {
       commit("INSERT_DAIJI_Alibaba_Url", data);
     },
+
+    /**
+     * 添加采集数据【每采集一个则添加一个】
+     * urls中移除此条采集成功链接
+     * result:中存储采集成功的数据
+     * errList:记录采集异常的数据
+     * @param commit
+     * @param data
+     * @constructor
+     */
+    AddAlibabaCaiJiInfo({ commit },data) {
+      commit("ADD_DAIJI_Alibaba_INFO", data);
+    },
+
 
 
   },

@@ -3,9 +3,9 @@
   <div class="app-container">
     <el-row>
       <el-col :span="12">
-        <el-button @click="start()" style="float: left">开始采集</el-button>
+        <el-button @click="start(CaiJiStatus)" style="float: left" :type="btnColor">{{btnText}}</el-button>
         <el-button @click="clean()" style="float: left">清空采集数据</el-button>
-        <el-button @click="clean1688uRL()" style="float: left">清空网址库</el-button>
+<!--        <el-button @click="clean1688uRL()" style="float: left">关闭弹窗</el-button>-->
 
         <vue-xlsx-table @on-select-file="handleSelectedFile"><i class="el-icon-download"></i>导入网址</vue-xlsx-table>
 
@@ -18,17 +18,17 @@
     </el-row>
 
     <!--表格-->
-    <el-table v-loading="loading" :data="tableData" border :empty-text="emptyText" height="300"
+    <el-table v-loading="loading" :data="tableData" border :empty-text="emptyText" height="400"
               highlight-current-row tooltip-effect="dark">
       <el-table-column label="序号" type="index" width="50"></el-table-column>
       <el-table-column label="企业名称"   prop="companyName" width="180"  show-overflow-tooltip></el-table-column>
-      <el-table-column label="联系人" prop="name" width="100"></el-table-column>
-      <el-table-column label="联系电话" prop="phoneNum"  width="180"></el-table-column>
       <el-table-column label="移动电话" prop="mobileNo" width="125"></el-table-column>
-      <el-table-column label="传真" prop="faxNum" width="150"></el-table-column>
+      <el-table-column label="联系人" prop="name" width="100"></el-table-column>
+<!--      <el-table-column label="联系电话" prop="phoneNum"  width="180"></el-table-column>-->
+<!--      <el-table-column label="传真" prop="faxNum" width="150"></el-table-column>-->
       <el-table-column label="地址" show-overflow-tooltip prop="address"></el-table-column>
 <!--      <el-table-column label="官网" prop="companyName" width="100"></el-table-column>-->
-      <el-table-column label="详情链接" width="80"></el-table-column>
+<!--      <el-table-column label="详情链接" width="80"></el-table-column>-->
     </el-table>
 
     <!--分页-->
@@ -75,17 +75,18 @@
 import tools from "@/utils/tools";
 import AlibabaMixins from "../../mixins/AlibabaMixins";
 import {mapGetters} from "vuex";
+import {getDataByUrl} from "../../api/api";
+import {ipcRenderer} from "electron";
 export default {
   mixins: [tools,AlibabaMixins],
   data: () => {
     return {
-      tableData:[],
       emptyText:'暂无数据，先去采集吧!',
       jsonFields: {  //导出Excel表格的表头设置
         '企业名称': 'companyName',
+        '移动电话':{field: "mobileNo", callback: (value) => {return  value+"&nbsp;";}},
         '联系人': 'name',
         '联系电话': {field: "phoneNum", callback: (value) => {return  value+"&nbsp;";}},
-        '移动电话':{field: "mobileNo", callback: (value) => {return  value+"&nbsp;";}},
         '传真':{field: "faxNum", callback: (value) => {return  value+"&nbsp;";}},
         '地址': 'address',
         "详情链接": 'detailUrl'
@@ -95,44 +96,92 @@ export default {
       pageSize: 20,//每页数据量
       total: 0,//总记录数
       current: 1,//当前页
+      CaiJiStatus:0,//0 未开始采集  1采集中  2暂停采集  3结束采集
+      btnText:'开始采集',
+      btnColor:'primary'
     }
   },
 
+  watch:{
+    CaiJiStatus(newStar,oldStar){
+      if(newStar==0){
+        this.btnText = '开始采集'
+        this.btnColor = 'primary';
+      }
+      if(newStar==1){
+        this.btnText = '暂停采集'
+        this.btnColor = 'success';
+      }
+      if(newStar==2){
+        this.btnText = '采集已暂停'
+        this.btnColor = 'warning';
+      }
+    }
+  },
 
   computed: {
     //1688数据
     ...mapGetters(["AlibabaCaiJiData"]),
-  },
-
-  created() {
-    this.initData()
-  },
-  mounted() {
-
-  },
-
-  methods: {
-
-    start(item){
-      console.log("开始采集")
-    },
-
-    //翻页
-    currentClick(current) {
-      // this.tableData = [];
-      // this.current = current;
-      // this.CaiJiList[current-1].items.forEach(item=>{
-      //   this.tableData.push(item.item_data.goods_model)
-      // })
-    },
-
-    /**
-     * 清空采集网址库
-     */
-    clean1688uRL(){
-
+    tableData(){
+      return this.AlibabaCaiJiData.result
     }
-  }
+
+  },
+
+
+  mounted() {
+    var that = this;
+    this.$Bus.$on("httpData",(async res => {
+      let data;
+      /**
+       * 响应的数据是来自采集数据的接口时
+       * 将数据存入状态管理和缓存中
+       */
+      if (this.strRegExp(res.url, 'renderPcPageData')) {
+        // console.log("-----采集到数据6666----")
+        // console.log(res.ResponseBody)
+      }
+
+      if (this.strRegExp(res.url, '/contactinfo.htm')) {
+        console.log("-----采集到数据----")
+        // console.log(res.ResponseBody)
+        var info;
+        var mobilePhone = "";
+        var companyName = "";
+        var name = "";
+        try {
+          mobilePhone = res.ResponseBody.match(/"mobilePhone":"(\S*)","companyName"/)[1];
+          companyName = res.ResponseBody.match(
+              /"moduleData":{"companyName":"(\S*)","detailAddress":"/)[1];
+          info = {
+            item: {url: res.url},
+            status: true,
+            data: {"mobileNo": mobilePhone, companyName, name}
+          }
+        } catch (e) {
+          try {
+            data = this.interceptStr(res.ResponseBody, '<div class="contcat-desc"', '公司主页')
+            mobilePhone = this.StrReplace(this.interceptStr(data, '移动电话', '传'))
+            companyName = res.ResponseBody.match(/<h4>(\S*)</)[1];
+            name = this.StrReplace(this.interceptStr(res.ResponseBody, 'membername', '</a>&nbsp;'))
+            info = {
+              item: {url: res.url},
+              status: true,
+              data: {"mobileNo": mobilePhone, companyName, name}
+            }
+          } catch (err) {
+            // TODO 第三种情况获取 -暂无发获取
+            info = {item: {url: res.url}, status: false, data: null}
+          }
+        }
+        //写入数据
+        that.$store.dispatch('AddAlibabaCaiJiInfo', info)
+        ipcRenderer.invoke("close1688Windows", "")
+        await this.sleep(3000);
+        this.$Bus.$emit("CaiJi", this.CaiJiStatus)
+      }
+    }))
+  },
 }
 
 </script>

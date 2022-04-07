@@ -7,19 +7,8 @@ import electronDevtoolsInstaller, { VUEJS_DEVTOOLS } from 'electron-devtools-ins
 import initWindow_web from "./services/windowManager_web";
 
 global.sharedObject = {
-  someProperty: 'default value'
+  winId:0,//打开的web窗口ID
 }
-
-// window.onload=()=>{
-//   var btnDom =  document.querySelector("#btn_submit")
-//   btnDom.onClick=()=>{
-//     console.log('aaaaaaaaa')
-//   }
-// }
-// app.on('test', () => {
-//   console.log('==========test')
-// })
-
 
 
 

@@ -16,6 +16,37 @@ export default {
       return false;
     },
 
+    /**
+     * 字符串截取
+     * @param str  待截取字符串
+     * @param start 开始字符串
+     * @param end 结束字符串
+     */
+    interceptStr(str,start,end){
+      str = str.substring(str.lastIndexOf(start));
+      str =  str.substring(0,str.lastIndexOf(end))
+      return str;
+    },
+    /**
+     * 字符过滤
+     * @param str
+     * @returns {*}
+     * @constructor
+     */
+    StrReplace(str){
+      str = str.replace(/\s*/g,"");
+      str = str.replace("<dt>", "")
+      str = str.replace("</dt>", "")
+      str = str.replace("移动电话：", "")
+      str = str.replace("\n", "")
+      str = str.replace("<dd>", "")
+      str = str.replace("</dd>", "")
+      str = str.replace("</dl>", "")
+      str = str.replace("<dl>", "")
+      str = str.replace("membername\"target=\"_blank\">","")
+      return str;
+    },
+
 
 
 
