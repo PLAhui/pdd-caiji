@@ -1,5 +1,5 @@
 <template>
-  <div style="background:#f0f2f5;margin-top: -20px;">
+  <div style="margin-top: -20px;">
     <div class="wscn-http404">
       <div class="pic-404">
         <img class="pic-404__parent" :src="img_404" alt="404">

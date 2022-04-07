@@ -61,7 +61,7 @@ function createMainWindow(url) {
 
 
   webWindow.webContents.once('dom-ready', () => {
-    global.sharedObject.winId = webWindow.id; //将窗口ID放入全局变量
+    global.sharedObject.winId_alibaba.push(webWindow.id); //将窗口ID放入全局变量
     webWindow.webContents.openDevTools()//打开开发者工具
     webWindow.show()
   })

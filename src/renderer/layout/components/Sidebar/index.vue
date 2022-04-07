@@ -29,7 +29,7 @@ export default {
   computed: {
     ...mapGetters(["sidebar", "permission_routes"]),
     isCollapse() {
-      console.log(this.$store.getters);
+
       return !this.sidebar.opened;
     },
   },

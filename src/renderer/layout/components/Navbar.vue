@@ -161,7 +161,6 @@ export default {
     this.timer = setInterval(() => {
       this.set_time();
     }, 60000);
-    console.log(this.userImage)
   },
   methods: {
     showPwd() {

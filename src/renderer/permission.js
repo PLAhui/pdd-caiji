@@ -5,7 +5,7 @@ import Performance from '@/tools/performance'
 var end = null
 const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach(async (to, from, next) => {
-  console.log("------路由切换-----")
+  // console.log("------路由切换-----")
   end = Performance.startExecute(`${from.path} => ${to.path} 路由耗时`) /// 路由性能监控
 
   if (store.getters.token) {
@@ -24,8 +24,8 @@ router.beforeEach(async (to, from, next) => {
           next({ ...to, replace: true })
         } catch (error) {
           await store.dispatch('LogOut')
-          console.log(error)
-          // next('/login')
+          // console.log(error)
+          // next('/login')------路由切换-----
           await router.push('login')
 
         }

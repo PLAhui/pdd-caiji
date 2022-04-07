@@ -42,7 +42,7 @@
 <!--    </el-pagination>-->
 
     <el-row style="margin-top: 20px" :gutter="20" v-if="true">
-      <el-col :span="12">
+      <el-col :span="24">
         <h4  class="tab">待采集网址[{{AlibabaCaiJiData.urls.length}}]</h4>
         <ul class="infinite-list" style="overflow:auto">
           <div v-if="AlibabaCaiJiData.urls.length==0">暂无数据</div>
@@ -131,7 +131,7 @@ export default {
 
   mounted() {
     var that = this;
-    this.$Bus.$on("httpData",(async res => {
+    this.$Bus.$on("httpData",( res => {
       let data;
       /**
        * 响应的数据是来自采集数据的接口时
@@ -176,8 +176,8 @@ export default {
         }
         //写入数据
         that.$store.dispatch('AddAlibabaCaiJiInfo', info)
-        ipcRenderer.invoke("close1688Windows", "")
-        await this.sleep(3000);
+        // ipcRenderer.invoke("close1688Windows", "")
+        new Promise(resolve => setTimeout(resolve, 3000));
         this.$Bus.$emit("CaiJi", this.CaiJiStatus)
       }
     }))

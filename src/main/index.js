@@ -7,7 +7,7 @@ import electronDevtoolsInstaller, { VUEJS_DEVTOOLS } from 'electron-devtools-ins
 import initWindow_web from "./services/windowManager_web";
 
 global.sharedObject = {
-  winId:0,//打开的web窗口ID
+  winId_alibaba:[],//打开的1688-web窗口ID
 }
 
 
