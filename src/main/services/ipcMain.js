@@ -24,6 +24,7 @@ export default {
     //启动或显示1688窗口
     ipcMain.handle('open1688Windows',(event, arg) => {
       if(BrowserWindow.fromId(3)){
+        BrowserWindow.fromId(3).webContents.loadURL(arg.url)
         BrowserWindow.fromId(3).show()
         return "显示1688窗口"
       }else{

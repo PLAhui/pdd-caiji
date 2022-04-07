@@ -5,7 +5,7 @@
       <el-col :span="12">
         <el-button @click="start()" style="float: left">开始采集</el-button>
         <el-button @click="clean()" style="float: left">清空采集数据</el-button>
-        <el-button @click="clean1688uRL()" style="float: left">清空网址库</el-button>
+<!--        <el-button @click="clean1688uRL()" style="float: left">清空网址库</el-button>-->
 
         <vue-xlsx-table @on-select-file="handleSelectedFile"><i class="el-icon-download"></i>导入网址</vue-xlsx-table>
 
@@ -22,9 +22,9 @@
               highlight-current-row tooltip-effect="dark">
       <el-table-column label="序号" type="index" width="50"></el-table-column>
       <el-table-column label="企业名称"   prop="companyName" width="180"  show-overflow-tooltip></el-table-column>
+      <el-table-column label="移动电话" prop="mobileNo" width="125"></el-table-column>
       <el-table-column label="联系人" prop="name" width="100"></el-table-column>
       <el-table-column label="联系电话" prop="phoneNum"  width="180"></el-table-column>
-      <el-table-column label="移动电话" prop="mobileNo" width="125"></el-table-column>
       <el-table-column label="传真" prop="faxNum" width="150"></el-table-column>
       <el-table-column label="地址" show-overflow-tooltip prop="address"></el-table-column>
 <!--      <el-table-column label="官网" prop="companyName" width="100"></el-table-column>-->
@@ -75,17 +75,17 @@
 import tools from "@/utils/tools";
 import AlibabaMixins from "../../mixins/AlibabaMixins";
 import {mapGetters} from "vuex";
+import {getDataByUrl} from "../../api/api";
 export default {
   mixins: [tools,AlibabaMixins],
   data: () => {
     return {
-      tableData:[],
       emptyText:'暂无数据，先去采集吧!',
       jsonFields: {  //导出Excel表格的表头设置
         '企业名称': 'companyName',
+        '移动电话':{field: "mobileNo", callback: (value) => {return  value+"&nbsp;";}},
         '联系人': 'name',
         '联系电话': {field: "phoneNum", callback: (value) => {return  value+"&nbsp;";}},
-        '移动电话':{field: "mobileNo", callback: (value) => {return  value+"&nbsp;";}},
         '传真':{field: "faxNum", callback: (value) => {return  value+"&nbsp;";}},
         '地址': 'address',
         "详情链接": 'detailUrl'
@@ -102,37 +102,63 @@ export default {
   computed: {
     //1688数据
     ...mapGetters(["AlibabaCaiJiData"]),
+    tableData(){
+      return this.AlibabaCaiJiData.result
+    }
+
   },
 
   created() {
     this.initData()
   },
   mounted() {
+    var that = this;
+    this.$Bus.$on("httpData",(res=>{
+      let data;
+      /**
+       * 响应的数据是来自采集数据的接口时
+       * 将数据存入状态管理和缓存中
+       */
+      if(this.strRegExp(res.url,'renderPcPageData')){
+        console.log("-----采集到数据6666----")
+        console.log(res.ResponseBody)
+      }
 
+      if(this.strRegExp(res.url,'/contactinfo.htm')){
+        console.log("-----采集到数据----")
+        // console.log(res.ResponseBody)
+        var mobilePhone = "";
+        var companyName = "";
+        var name = "";
+        try {
+           mobilePhone =  res.ResponseBody.match(/"mobilePhone":"(\S*)","companyName"/)[1];
+           companyName =  res.ResponseBody.match(/"moduleData":{"companyName":"(\S*)","detailAddress":"/)[1];
+          // var detailAddress=res.ResponseBody.match(/"detailAddress":"(\S*)/)[1];
+          console.log("获取到了")
+        }catch (e) {
+         try {
+           data =  this.interceptStr(res.ResponseBody,'<div class="contcat-desc"','公司主页')
+           mobilePhone = this.StrReplace(this.interceptStr(data,'移动电话','传'))
+           companyName =  res.ResponseBody.match(/<h4>(\S*)</)[1];
+           name = this.StrReplace(this.interceptStr( res.ResponseBody,'membername','</a>&nbsp;'))
+           console.log("第二种情况获取到了")
+         }catch (err) {
+           var url =  res.ResponseBody.match(/window.shopPageDataApi = '(\S*)';/)[1];
+           console.log("第三种情况获取",url)
+           getDataByUrl(url).then(res=>{
+             console.log(res.data)
+           })
+         }
+        }
+        var item = {"mobileNo":mobilePhone,companyName,name}
+
+
+        //写入数据
+        that.$store.dispatch('AddAlibabaCaiJiInfo',{item:{url:res.url}, status:true, data:item})
+
+      }
+    }))
   },
-
-  methods: {
-
-    start(item){
-      console.log("开始采集")
-    },
-
-    //翻页
-    currentClick(current) {
-      // this.tableData = [];
-      // this.current = current;
-      // this.CaiJiList[current-1].items.forEach(item=>{
-      //   this.tableData.push(item.item_data.goods_model)
-      // })
-    },
-
-    /**
-     * 清空采集网址库
-     */
-    clean1688uRL(){
-
-    }
-  }
 }
 
 </script>
