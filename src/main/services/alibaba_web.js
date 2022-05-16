@@ -72,6 +72,8 @@ function createMainWindow(url) {
     webWindow.webContents.send("w-max",false)
   })
   webWindow.on('closed', () => {
+    console.log("closed webWindow")
+    global.sharedObject.winId_alibaba=[]
     webWindow = null
     // mainWindow.quit();
   })

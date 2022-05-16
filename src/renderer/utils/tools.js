@@ -43,6 +43,7 @@ export default {
       str = str.replace("</dd>", "")
       str = str.replace("</dl>", "")
       str = str.replace("<dl>", "")
+      str = str.replace('class=\"address\">','')
       str = str.replace("membername\"target=\"_blank\">","")
       return str;
     },

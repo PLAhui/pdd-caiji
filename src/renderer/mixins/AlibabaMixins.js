@@ -13,19 +13,14 @@ export default {
     this.initData()
     /**
      * 监听采集指令
+     * 这里收到消息时执行采集
      */
     this.$Bus.$on("CaiJi",async (res) => {
       if (res == 1) {
-        // while (true) {
           await this.sleep(3000);
           this.caiji()
-          // if(this.CaiJiStatus!=1){
-          //   console.log("暂停采集")
-          //   break;
-          // }
-        // }
       }else {
-        console.log("暂停采集")
+        // console.log("暂停采集")
       }
     })
   },
@@ -44,7 +39,7 @@ export default {
      * 打开模拟器
      */
     start(status){
-      this.caiji()
+      // this.caiji()
 
 
       console.log("打开模拟器，开始采集数据..")
@@ -67,9 +62,17 @@ export default {
      * 采集数据
      */
     caiji(){
-      var item = this.AlibabaCaiJiData.urls[0];
-      console.log('企业：',item.title,'网址：',item.url)
-      ipcRenderer.invoke("open1688Windows",{url:item.url})
+      var  url = "https://hmqh1688.1688.com/page/contactinfo.htm"
+      ipcRenderer.invoke("open1688Windows",{url:url})
+
+      // if(this.AlibabaCaiJiData.urls.length!=0){
+      //   var item = this.AlibabaCaiJiData.urls[0];
+      //   console.log('企业：',item.title,'网址：',item.url)
+      //   ipcRenderer.invoke("open1688Windows",{url:item.url})
+      // }else {
+      //   this.CaiJiStatus = 0
+      //   this.$message.error("无采集网址")
+      // }
     },
 
 
@@ -80,15 +83,13 @@ export default {
      * 不存在数据时创建空数据对象
      */
     initData(){
-      console.log(this.AlibabaCaiJiData)
       if(this.AlibabaCaiJiData==null) this.$store.dispatch('SetAlibabCaiJiData',{urls:[],result:[],errorUrls:[]})
-      console.log("初始化采集数据...",this.AlibabaCaiJiData)
+      console.log("初始化采集数据...")
     },
     /**
      * 清空采集数据
      */
     clean(){
-      this.tableData=[]
       this.$store.dispatch('DeleteAlibabaCaiJiData')
     },
     /**

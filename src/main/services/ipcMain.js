@@ -24,6 +24,7 @@ export default {
     //启动或显示1688窗口
     ipcMain.handle('open1688Windows',(event, arg) => {
       const winIds = global.sharedObject.winId_alibaba;
+      console.log("存在的窗口：",winIds)
       if(winIds.length==0){
         alibaba_web(arg.url)
         return "启动1688窗口"

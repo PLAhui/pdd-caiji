@@ -22,12 +22,18 @@
               highlight-current-row tooltip-effect="dark">
       <el-table-column label="序号" type="index" width="50"></el-table-column>
       <el-table-column label="企业名称"   prop="companyName" width="180"  show-overflow-tooltip></el-table-column>
-      <el-table-column label="移动电话" prop="mobileNo" width="125"></el-table-column>
       <el-table-column label="联系人" prop="name" width="100"></el-table-column>
+      <el-table-column label="移动电话" prop="mobileNo" width="125"></el-table-column>
 <!--      <el-table-column label="联系电话" prop="phoneNum"  width="180"></el-table-column>-->
 <!--      <el-table-column label="传真" prop="faxNum" width="150"></el-table-column>-->
       <el-table-column label="地址" show-overflow-tooltip prop="address"></el-table-column>
-<!--      <el-table-column label="官网" prop="companyName" width="100"></el-table-column>-->
+      <el-table-column label="官网" width="100">
+        <template slot-scope="scope">
+          <span v-if="scope.row.subdomain=='-'">-</span>
+          <a v-else :href="scope.row.subdomain" style="color: #0080ff"
+             target="_blank">查看官网</a>
+        </template>
+      </el-table-column>
 <!--      <el-table-column label="详情链接" width="80"></el-table-column>-->
     </el-table>
 
@@ -84,12 +90,12 @@ export default {
       emptyText:'暂无数据，先去采集吧!',
       jsonFields: {  //导出Excel表格的表头设置
         '企业名称': 'companyName',
-        '移动电话':{field: "mobileNo", callback: (value) => {return  value+"&nbsp;";}},
         '联系人': 'name',
-        '联系电话': {field: "phoneNum", callback: (value) => {return  value+"&nbsp;";}},
-        '传真':{field: "faxNum", callback: (value) => {return  value+"&nbsp;";}},
+        '移动电话':{field: "mobileNo", callback: (value) => {return  value+"&nbsp;";}},
+        // '联系电话': {field: "phoneNum", callback: (value) => {return  value+"&nbsp;";}},
+        // '传真':{field: "faxNum", callback: (value) => {return  value+"&nbsp;";}},
         '地址': 'address',
-        "详情链接": 'detailUrl'
+        "官网": 'subdomain'
       },
 
       loading: false,
@@ -133,52 +139,106 @@ export default {
     var that = this;
     this.$Bus.$on("httpData",( res => {
       let data;
+      console.error("请求链接：",res.url,res.ResponseBody)
       /**
        * 响应的数据是来自采集数据的接口时
        * 将数据存入状态管理和缓存中
        */
-      if (this.strRegExp(res.url, 'renderPcPageData')) {
-        // console.log("-----采集到数据6666----")
+      if (this.strRegExp(res.url, 'https://login.taobao.com')) {
+        console.log("需要登录")
         // console.log(res.ResponseBody)
       }
+
+      if (this.strRegExp(res.url, 'renderPcPageData')) {
+        console.log("-----采集到数据6666----")
+        console.log(res.ResponseBody)
+      }
+
+      if (this.strRegExp(res.url, 'contactinfo.htm/_____tmd_____/report?x5secdata=')) {
+        console.log("-----出现滑块验证----")
+        console.log(res.ResponseBody)
+      }
+
+
 
       if (this.strRegExp(res.url, '/contactinfo.htm')) {
         console.log("-----采集到数据----")
         // console.log(res.ResponseBody)
         var info;
-        var mobilePhone = "";
-        var companyName = "";
-        var name = "";
+        var mobilePhone = "";//联系电话
+        var companyName = "";//企业名称
+        var address = "-"; //地址
+        var name = "-"; //联系人
+        var subdomain = "-";//公司主页
         try {
           mobilePhone = res.ResponseBody.match(/"mobilePhone":"(\S*)","companyName"/)[1];
-          companyName = res.ResponseBody.match(
-              /"moduleData":{"companyName":"(\S*)","detailAddress":"/)[1];
+          companyName = res.ResponseBody.match(/"companyName":"(\S*)","bannerHeight"/)[1];
+          companyName = companyName.match(/(\S*)","radianceData/)[1];
+          address = this.StrReplace(this.interceptStr(res.ResponseBody, 'detailAddress\":\"', '\"},'))
+          address = address.match(/detailAddress":"(\S*)"/)[1];
+          address = address.substring(0,address.lastIndexOf('"},"formData"'))
           info = {
             item: {url: res.url},
             status: true,
-            data: {"mobileNo": mobilePhone, companyName, name}
+            data: {"mobileNo": mobilePhone, companyName, name,address,subdomain}
           }
+          console.log("采集到的数据mode1：")
         } catch (e) {
           try {
+
             data = this.interceptStr(res.ResponseBody, '<div class="contcat-desc"', '公司主页')
             mobilePhone = this.StrReplace(this.interceptStr(data, '移动电话', '传'))
             companyName = res.ResponseBody.match(/<h4>(\S*)</)[1];
+            // companyName = companyName.substring(0,companyName.lastIndexOf('","radianceData"'))
             name = this.StrReplace(this.interceptStr(res.ResponseBody, 'membername', '</a>&nbsp;'))
+            name = name.substring(0,name.lastIndexOf('<'))
+            address = this.StrReplace(this.interceptStr(res.ResponseBody, 'class = "address">', '邮'))
+            subdomain = this.StrReplace(this.interceptStr(res.ResponseBody, '公司主页', 'class=')).match(/<div><ahref="(\S*)subdomain/)[1].replace('"class="','');
             info = {
               item: {url: res.url},
               status: true,
-              data: {"mobileNo": mobilePhone, companyName, name}
+              data: {"mobileNo": mobilePhone, companyName, name,address,subdomain}
             }
+
+            console.log("采集到的数据mode2：")
           } catch (err) {
-            // TODO 第三种情况获取 -暂无发获取
-            info = {item: {url: res.url}, status: false, data: null}
+            try {
+              console.log("采集到的数据mode3：",res.ResponseBody)
+              mobilePhone = this.StrReplace(this.interceptStr(res.ResponseBody, '"mobilePhone":"', '","companyName"'))
+              mobilePhone = mobilePhone.replace('"mobilePhone":"', '')
+              // if (mobilePhone.length>100){
+              //   subdomain = res.url
+              //   mobilePhone = '-'
+              // }
+              address = this.StrReplace(this.interceptStr(res.ResponseBody, '"detailAddress":"', '"},"formData"'))
+              address = address.replace('"detailAddress":"', '')
+              companyName = res.ResponseBody.match(/"companyName":"(\S*)","imall"/)[1];
+              companyName = companyName.match(/(\S*)","radianceData/)[1];
+
+              info = {
+                item: {url: res.url},
+                status: true,
+                data: {"mobileNo": mobilePhone, companyName, name,address,subdomain}
+              }
+            }catch (e) {
+              //TODO 当出现滑块验证时
+              // TODO 第三种情况获取 -暂无发获取
+              //将此链接存入异常队列
+              console.log("-----暂无法获取数据，此链接存入异常队列----",err)
+
+              info = {item: {url: res.url}, status: false, data: null}
+              this.start(2)//暂停采集
+              console.log("暂停采集",res.url)
+              return
+            }
           }
         }
+
         //写入数据
         that.$store.dispatch('AddAlibabaCaiJiInfo', info)
         // ipcRenderer.invoke("close1688Windows", "")
-        new Promise(resolve => setTimeout(resolve, 3000));
-        this.$Bus.$emit("CaiJi", this.CaiJiStatus)
+        // new Promise(resolve => setTimeout(resolve, 3000));
+        // this.$Bus.$emit("CaiJi", this.CaiJiStatus)
       }
     }))
   },

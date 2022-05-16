@@ -69,6 +69,19 @@ export default [
       }
     ]
   },
+  {
+    path: '/carzone',
+    component: Layout,
+    meta: { title: '1688', icon: 'table'},
+    children: [
+      {
+        path: 'index',
+        name: '天猫汽车',
+        component: () => import('@/views/carzone/index'),
+        meta: { title: '天猫汽车', icon: 'table' }
+      }
+    ]
+  },
   // {
   //   path: '/table',
   //   status:false,

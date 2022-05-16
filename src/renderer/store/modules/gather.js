@@ -13,9 +13,36 @@ const  gather = {
     PinDuoDuo: JSON.parse(localStorage.getItem('CaiJiData_Pdd')),
     //1688数据
     Alibaba: JSON.parse(localStorage.getItem('CaiJiData_1688')),
+    //天猫汽车数据
+    CarZone:JSON.parse(localStorage.getItem('CarZone')),
   },
 
   mutations: {
+    /**
+     * 设置采集数据-天猫汽车
+     * 首次初始化时调用
+     * @param state
+     * @param data
+     * @constructor
+     */
+    SET_DAIJI_CarZone:(state, data) => {
+      localStorage.setItem("CarZone", JSON.stringify(data));
+      state.CarZone = data;
+    },
+    /**
+     * 清空采集的数据
+     * @param state
+     * @param data
+     * @constructor
+     */
+    DELETE_DAIJI_CarZone:(state, data) => {
+      localStorage.setItem("CarZone", JSON.stringify([]));
+      state.CarZone = [];
+    },
+
+
+
+
     /**
      * 设置采集数据-拼多多
      * 首次初始化时调用
@@ -47,6 +74,22 @@ const  gather = {
       localStorage.setItem("CaiJiData_Pdd", JSON.stringify(PinDuoDuoData));
       state.PinDuoDuo = PinDuoDuoData;
     },
+
+
+
+    INSERT_DAIJI_CarZone:(state, data) => {
+      var CarZone = JSON.parse(localStorage.getItem("CarZone"))
+      var list = [];
+      data.items.forEach(res=>{
+        list.push(res)
+      })
+      data.items = list;
+      CarZone.push(data)
+      localStorage.setItem("CarZone", JSON.stringify(CarZone));
+      state.CarZone = CarZone;
+    },
+
+
     /**
      * 清空采集的数据
      * @param state
@@ -129,6 +172,21 @@ const  gather = {
      * @param data
      * @constructor
      */
+    SetCarZoneCaiJiData({ commit },data) {
+      commit("SET_DAIJI_CarZone", data);
+    },
+    DeleteCarZoneCaiJiData({ commit },data) {
+      commit("DELETE_DAIJI_CarZone", data);
+    },
+
+
+    /**
+     * 设置采集数据-拼多多
+     * 首次初始化时调用
+     * @param commit
+     * @param data
+     * @constructor
+     */
     SetPinDuoDuoCaiJiData({ commit },data) {
       commit("SET_DAIJI_PinDuoDuo", data);
     },
@@ -142,6 +200,12 @@ const  gather = {
     InsertPinDuoDuoCaiJiData({ commit },data) {
       commit("INSERT_DAIJI_PinDuoDuo", data);
     },
+
+
+    InsertCarZoneCaiJiData({ commit },data) {
+      commit("INSERT_DAIJI_CarZone", data);
+    },
+
     /**
      * 清空采集的数据
      * @param commit

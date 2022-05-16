@@ -13,6 +13,7 @@ const getters = {
   permission_routes: state => state.permission.routers,
   PinDuoDuoCaiJiData: state => state.gather.PinDuoDuo,
   AlibabaCaiJiData: state => state.gather.Alibaba,
+  CarZoneCaiJiData: state => state.gather.CarZone,
 }
 
 export default getters
