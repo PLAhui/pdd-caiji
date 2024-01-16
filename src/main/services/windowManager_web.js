@@ -18,10 +18,10 @@ var webWindow = null
 function createMainWindow(url) {
   webWindow = new BrowserWindow({
     title:'模拟器',
-    height: 844,
+    height: 600,
     useContentSize: true,
-    width: 390,
-    x:1600,
+    width: 1200,
+    x:600,
     y:100,
     show: false,
     frame: config.IsUseSysTitle,

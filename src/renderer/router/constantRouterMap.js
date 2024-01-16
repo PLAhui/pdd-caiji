@@ -24,51 +24,51 @@ import Layout from '@/layout'
   }
  **/
 export default [
-  {
-    path: '/form',
-    component: Layout,
-    meta: { title: '配置', icon: 'form' ,roles: ['admin']},
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: '配置', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/PDD',
-    component: Layout,
-    meta: { title: '拼夕夕', icon: 'table',roles: ['admin','PDD'] },
-    children: [
-      {
-        path: 'caiji',
-        name: '采集',
-        component: () => import('@/views/PDD/caiji'),
-        meta: { title: '拼夕夕采集', icon: 'tree',roles: ['admin'] }
-      },
-      {
-        path: 'index',
-        name: '拼夕夕数据',
-        component: () => import('@/views/PDD/index'),
-        meta: { title: '拼夕夕数据', icon: 'table' }
-      }
-    ]
-  },
-  {
-    path: '/Alibaba',
-    component: Layout,
-    meta: { title: '1688', icon: 'table',roles: ['admin','1688']},
-    children: [
-      {
-        path: 'index',
-        name: '1688数据',
-        component: () => import('@/views/Alibaba/index'),
-        meta: { title: '1688数据采集', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/form',
+  //   component: Layout,
+  //   meta: { title: '配置', icon: 'form' ,roles: ['admin']},
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Form',
+  //       component: () => import('@/views/form/index'),
+  //       meta: { title: '配置', icon: 'form' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/PDD',
+  //   component: Layout,
+  //   meta: { title: '拼夕夕', icon: 'table',roles: ['admin','PDD'] },
+  //   children: [
+  //     {
+  //       path: 'caiji',
+  //       name: '采集',
+  //       component: () => import('@/views/PDD/caiji'),
+  //       meta: { title: '拼夕夕采集', icon: 'tree',roles: ['admin'] }
+  //     },
+  //     {
+  //       path: 'index',
+  //       name: '拼夕夕数据',
+  //       component: () => import('@/views/PDD/index'),
+  //       meta: { title: '拼夕夕数据', icon: 'table' }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/Alibaba',
+  //   component: Layout,
+  //   meta: { title: '1688', icon: 'table',roles: ['admin','1688']},
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '1688数据',
+  //       component: () => import('@/views/Alibaba/index'),
+  //       meta: { title: '1688数据采集', icon: 'table' }
+  //     }
+  //   ]
+  // },
   {
     path: '/carzone',
     component: Layout,
@@ -95,17 +95,17 @@ export default [
   //     }
   //   ]
   // },
-  {
-    path: '/',
-    component: Layout,
-    meta: { roles: ['admin'] },
-    children: [
-      {
-        path: 'devIng',
-        name: '权限',
-        component: () => import('@/views/devIng'),
-        meta: { title: '权限', icon: 'table' }
-      }
-    ]
-  },
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   meta: { roles: ['admin'] },
+  //   children: [
+  //     {
+  //       path: 'devIng',
+  //       name: '权限',
+  //       component: () => import('@/views/devIng'),
+  //       meta: { title: '权限', icon: 'table' }
+  //     }
+  //   ]
+  // },
 ]

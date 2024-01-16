@@ -20,7 +20,7 @@ export const constantRouterMap = [{
   }]
 }, {
   path: '/login',
-  component: () => import('@/views/login'),
+  component: () => import('@/views/carzone'),
   hidden: true
 }, {
   path: '*',

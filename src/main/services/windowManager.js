@@ -29,8 +29,8 @@ function createMainWindow() {
       webSecurity: false,
       enableRemoteModule:true,
       // 如果是开发模式可以使用devTools
-      devTools: process.env.NODE_ENV === 'development' || config.build.openDevTools,
-      // devTools: true,
+      // devTools: process.env.NODE_ENV === 'development' || config.build.openDevTools,
+      devTools: false,
       // 在macos中启用橡皮动画
       scrollBounce: process.platform === 'darwin'
     }
