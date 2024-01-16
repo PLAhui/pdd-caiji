@@ -1,9 +1,25 @@
-# PDD-SCRAPY
+### 拼多多数据采集器
 
-> This is a project based on electron-vue, using the elementUI, vuex, vue-router, axios technology stack. This project is divided into two branches. The master maintains the original project structure and features for dependency updates, and the SynchronizedUpdates branch. It keeps the original file structure and the code part is completely customized by me personally; it includes: a complete background management interface, nedb database package, and two complete update download methods. If you feel redundant, you can delete it yourself.
+> 技术栈：nodejs;vue;electron
 
-[中文文档地址](https://github.com/umbrella22/electron-vue-template/blob/master/README_ZH.md)
-[中文在线文档](https://umbrella22.github.io/electron-vue-template-doc/)
+ **支持 windoes，mac 操作系统** 
+
+#### v1.0版即将上线
+- 关键词+筛选条件  采集 商品数据
+- 店铺内 条件筛选  采集 商品数据
+- 导出Excel
+
+#### 系统截图
+
+![采集器部分截图](https://zy-yusouu.oss-accelerate.aliyuncs.com/wp-content/uploads/2022/03/1648399275-2e8394b18cae5da.png)
+![采集器部分截图](https://zy-yusouu.oss-accelerate.aliyuncs.com/wp-content/uploads/2022/03/1648433737-a64ad1378ca1d12.png)
+
+敬请期待！
+合作&定制请联系：
+QQ:1193447180  微信：DP6683007
+
+
+
 
 
 ### To run a project, you need to have **node version 16** or higher and **use yarn as your dependency management tool**
@@ -55,7 +71,5 @@ yarn build
 - electron-updater
 - typescript
 - [element-plus](https://element.eleme.cn/#/en-US)
-
-# Note
-
-# [CHANGELOG](CHANGELOG.md)
+[electron-vue-template/中文文档地址](https://github.com/umbrella22/electron-vue-template/blob/master/README_ZH.md)
+[electron-vue-template-doc中文在线文档](https://umbrella22.github.io/electron-vue-template-doc/)
